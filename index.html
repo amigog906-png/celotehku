@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celotehku — Cek perkembangan bicara si Kecil gratis</title>
+<meta name="description" content="Cek perkembangan bicara anak 1–4 tahun gratis dalam 2 menit. Program stimulasi bicara 10 menit sehari bareng orang tua.">
+<meta property="og:title" content="Celotehku — Cek perkembangan bicara si Kecil gratis">
+<meta property="og:description" content="Cek gratis 2 menit, lalu latihan 10 menit sehari bareng Bunda. Tanpa tambah screen time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel: isi CONFIG.pixelId di bawah, kode ini akan aktif otomatis -->
+
+<style>
+:root{
+  --ink:#1F2A44;        /* teks utama, biru tinta */
+  --ink-soft:#4A5672;
+  --sky:#F3F7FC;        /* latar */
+  --white:#FFFFFF;
+  --mango:#FFB627;      /* gelembung bicara, aksen utama */
+  --mango-soft:#FFF1CF;
+  --teal:#0F8C7E;       /* tombol aksi */
+  --teal-dark:#0B6F64;
+  --alert:#C73E3E;      /* tanda bahaya */
+  --alert-soft:#FCEBEB;
+  --line:#DCE4EF;
+  --r-lg:28px; --r-md:16px; --r-sm:10px;
+  --display:"Baloo 2", "Nunito", system-ui, sans-serif;
+  --body:"Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;font-family:var(--body);font-size:17px;line-height:1.6;color:var(--ink);background:var(--sky);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--teal-dark)}
+:focus-visible{outline:3px solid var(--mango);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.narrow{max-width:640px}
+h1,h2,h3{font-family:var(--display);line-height:1.12;margin:0 0 .5em;letter-spacing:-.01em}
+h1{font-size:clamp(2.1rem,6.4vw,3.6rem);font-weight:800}
+h2{font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:800}
+h3{font-size:1.25rem;font-weight:700}
+p{margin:0 0 1em}
+.muted{color:var(--ink-soft)}
+.small{font-size:.9rem}
+
+/* tombol */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;font:800 1.05rem/1 var(--body);padding:18px 26px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;transition:transform .12s ease, background .15s ease}
+.btn:active{transform:scale(.98)}
+.btn-main{background:var(--teal);color:#fff;box-shadow:0 6px 0 var(--teal-dark)}
+.btn-main:hover{background:var(--teal-dark)}
+.btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn-block{width:100%}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(243,247,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font:800 1.35rem/1 var(--display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-bubble{width:30px;height:24px;background:var(--mango);border-radius:14px 14px 14px 4px;display:inline-block;position:relative}
+.logo-bubble::after{content:"";position:absolute;left:8px;top:9px;width:14px;height:6px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 0 transparent}
+.top .btn{padding:11px 18px;font-size:.95rem;box-shadow:0 4px 0 var(--teal-dark)}
+
+/* hero */
+.hero{padding:40px 0 56px}
+.hero-grid{display:grid;gap:36px;align-items:center}
+@media(min-width:860px){.hero-grid{grid-template-columns:1.05fr .95fr}.hero{padding:72px 0 88px}}
+.hero p.lead{font-size:1.15rem;color:var(--ink-soft);max-width:34ch}
+.hero .note{margin-top:14px;font-size:.92rem;color:var(--ink-soft)}
+
+/* elemen utama: kata pertama yang tumbuh */
+.words{position:relative;min-height:330px;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;padding:12px 4px}
+.bubble{white-space:nowrap;align-self:flex-start;font-family:var(--display);font-weight:800;background:var(--mango);color:var(--ink);padding:.28em .7em .18em;border-radius:1.1em 1.1em 1.1em .25em;opacity:0;transform:translateY(12px) scale(.9);animation:pop .55s cubic-bezier(.2,.9,.3,1.3) forwards;line-height:1.05}
+.bubble.b1{font-size:1.3rem;animation-delay:.25s;background:var(--mango-soft)}
+.bubble.b2{font-size:2rem;animation-delay:.9s;background:#FFE09A;margin-left:22px}
+.bubble.b3{font-size:3.1rem;animation-delay:1.55s;margin-left:6px}
+.bubble.b4{font-size:clamp(2.4rem,10vw,4.6rem);animation-delay:2.25s;align-self:flex-end;border-radius:1.1em 1.1em .25em 1.1em;background:var(--white);border:4px solid var(--mango)}
+.words-cap{font-size:.9rem;color:var(--ink-soft);align-self:flex-end;opacity:0;animation:fade .6s ease 3s forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+
+/* section umum */
+section{padding:64px 0}
+.band-white{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+.facts{display:grid;gap:28px}
+@media(min-width:820px){.facts{grid-template-columns:1fr 1fr;gap:56px}}
+.fact-big{font:800 clamp(2.6rem,8vw,4rem)/1 var(--display);color:var(--ink)}
+.fact-big small{display:block;font:600 1rem/1.4 var(--body);color:var(--ink-soft);margin-top:8px;max-width:32ch}
+
+/* pendekatan: layar sebentar, main lama */
+.split{display:grid;gap:18px;margin-top:28px}
+@media(min-width:720px){.split{grid-template-columns:1fr 3fr}}
+.split > div{border-radius:var(--r-lg);padding:22px 24px}
+.split .screen{background:var(--ink);color:#fff}
+.split .play{background:var(--mango-soft);border:2px dashed var(--mango)}
+.split .min{font:800 2.2rem/1 var(--display);display:block;margin-bottom:6px}
+
+/* langkah */
+.steps{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:22px}
+@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+.steps li{position:relative;padding-left:58px}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:42px;height:42px;border-radius:50%;background:var(--ink);color:#fff;font:800 1.2rem/42px var(--display);text-align:center}
+.steps{counter-reset:s}
+
+.get{display:grid;gap:12px;margin:24px 0 0;padding:0;list-style:none}
+@media(min-width:720px){.get{grid-template-columns:1fr 1fr}}
+.get li{display:flex;gap:12px;align-items:flex-start}
+.get li::before{content:"";flex:0 0 22px;height:18px;margin-top:4px;background:var(--mango);border-radius:9px 9px 9px 2px}
+
+/* harga */
+.plans{display:grid;gap:18px;margin-top:30px}
+@media(min-width:880px){.plans{grid-template-columns:1fr 1.12fr 1fr;align-items:center}}
+.plan{background:var(--white);border:2px solid var(--line);border-radius:var(--r-lg);padding:26px 24px;display:flex;flex-direction:column;gap:12px}
+.plan h3{margin:0}
+.plan .price{font:800 2.3rem/1 var(--display)}
+.plan .price s{font:600 1rem var(--body);color:var(--ink-soft);margin-left:6px}
+.plan .per{font-size:.92rem;color:var(--ink-soft)}
+.plan ul{margin:4px 0 8px;padding-left:20px;font-size:.96rem}
+.plan.pick{background:var(--mango);border-color:var(--mango);padding:34px 26px}
+.plan.pick .per,.plan.pick .price s{color:var(--ink)}
+.plan .tag{align-self:flex-start;background:var(--ink);color:#fff;font-weight:800;font-size:.82rem;padding:5px 12px;border-radius:999px}
+.guarantee{margin-top:22px;display:flex;gap:14px;align-items:flex-start;background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.guarantee b{font-family:var(--display);font-size:1.15rem}
+
+/* ahli */
+.expert{display:flex;gap:18px;align-items:center;margin-top:8px}
+.expert .avatar{flex:0 0 64px;height:64px;border-radius:50%;background:var(--mango-soft);display:grid;place-items:center;font:800 1.4rem var(--display)}
+
+/* FAQ */
+.faq details{border-bottom:1px solid var(--line);padding:16px 0}
+.faq summary{cursor:pointer;font-weight:800;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:800 1.4rem/1 var(--display);color:var(--teal)}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin:10px 0 0;color:var(--ink-soft)}
+
+.final{text-align:left}
+footer{padding:36px 0 48px;font-size:.88rem;color:var(--ink-soft)}
+footer .disc{background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;margin-bottom:18px}
+
+/* ===== kuis ===== */
+.quiz{position:fixed;inset:0;z-index:50;background:var(--sky);display:none;flex-direction:column}
+.quiz.open{display:flex}
+.quiz-top{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--white)}
+.quiz-top button{background:none;border:0;font:800 1rem var(--body);color:var(--ink);cursor:pointer;padding:8px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--mango);transition:width .3s ease}
+.quiz-body{flex:1;overflow:auto;padding:28px 20px 40px}
+.q{max-width:560px;margin:0 auto}
+.q .count{font-size:.9rem;color:var(--ink-soft);margin-bottom:8px}
+.q h2{font-size:clamp(1.45rem,5vw,1.9rem)}
+.q .hint{color:var(--ink-soft);margin-top:-6px}
+.opts{display:grid;gap:12px;margin-top:20px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--white);border:2px solid var(--line);border-radius:var(--r-md);padding:16px 18px;font:700 1.05rem/1.35 var(--body);color:var(--ink);cursor:pointer;transition:border-color .15s, background .15s}
+.opt:hover{border-color:var(--ink-soft)}
+.opt[aria-pressed="true"]{border-color:var(--teal);background:#E6F4F2}
+.opt .dot{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--line);background:#fff}
+.opt[aria-pressed="true"] .dot{border-color:var(--teal);background:var(--teal);box-shadow:inset 0 0 0 4px #fff}
+.opt.check .dot{border-radius:6px}
+.q-actions{margin-top:22px}
+.field{display:grid;gap:6px;margin-top:16px}
+.field label{font-weight:800}
+.field input{font:600 1.05rem var(--body);padding:15px 16px;border-radius:var(--r-sm);border:2px solid var(--line);background:#fff;color:var(--ink)}
+.field input:focus{border-color:var(--teal);outline:none}
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:.92rem;color:var(--ink-soft)}
+.consent input{width:22px;height:22px;margin-top:2px;accent-color:var(--teal)}
+.err{color:var(--alert);font-weight:700;font-size:.92rem;margin-top:10px;min-height:1.2em}
+
+/* hasil */
+.result-head{border-radius:var(--r-lg);padding:24px;margin-bottom:22px}
+.result-head.ok{background:#E6F4F2}
+.result-head.mid{background:var(--mango-soft)}
+.result-head.low,.result-head.flag{background:var(--alert-soft)}
+.meter{height:14px;background:rgba(31,42,68,.12);border-radius:99px;overflow:hidden;margin:14px 0 6px}
+.meter i{display:block;height:100%;background:var(--ink);border-radius:99px;width:0;transition:width .9s ease .2s}
+.tips{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
+.tips li{background:var(--white);border-left:5px solid var(--mango);border-radius:var(--r-sm);padding:14px 16px}
+.flag-box{background:var(--white);border:2px solid var(--alert);border-radius:var(--r-md);padding:16px 18px;margin:16px 0}
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="logo-bubble" aria-hidden="true"></span><span data-brand>Celotehku</span></a>
+    <button class="btn btn-main" data-open-quiz>Cek gratis</button>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Bantu si Kecil mulai bicara, 10 menit sehari bareng Bunda</h1>
+        <p class="lead">Cek perkembangan bicara anak usia 1–4 tahun secara gratis dalam 2 menit. Dapatkan hasil dan langkah stimulasi yang bisa langsung dicoba di rumah.</p>
+        <button class="btn btn-main" data-open-quiz>Mulai cek gratis</button>
+        <p class="note">Gratis, tanpa membuat akun. Hasil langsung muncul.</p>
+      </div>
+      <div class="words" aria-hidden="true">
+        <span class="bubble b1">a…</span>
+        <span class="bubble b2">ma…</span>
+        <span class="bubble b3">ma-ma!</span>
+        <span class="bubble b4">mau susu!</span>
+        <span class="words-cap">Setiap kata baru dimulai dari satu suara.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAKTA -->
+  <section class="band-white">
+    <div class="wrap">
+      <h2>Bunda tidak sendirian</h2>
+      <div class="facts">
+        <div class="fact-big">5–8 dari 100
+          <small>anak usia prasekolah mengalami keterlambatan bicara, menurut Ikatan Dokter Anak Indonesia (IDAI).</small>
+        </div>
+        <div>
+          <p>Terapi wicara di klinik sangat membantu, tetapi biayanya tidak sedikit, jadwalnya sering penuh, dan banyak kota belum punya terapis wicara.</p>
+          <p>Yang bisa dimulai hari ini: latihan singkat dan rutin di rumah. Orang tua adalah teman bicara terbaik bagi si Kecil, karena Bunda dan Ayah bersamanya setiap hari.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PENDEKATAN -->
+  <section>
+    <div class="wrap">
+      <h2>Bukan tambah screen time</h2>
+      <p class="muted narrow">Anak belajar bicara dari obrolan dengan orang di dekatnya, bukan dari layar. Karena itu layar hanya dipakai sebentar untuk memberi contoh, lalu HP ditutup dan si Kecil main bareng Bunda.</p>
+      <div class="split">
+        <div class="screen"><span class="min">1 menit</span>Video contoh suara atau kata hari ini, ditonton bersama.</div>
+        <div class="play"><span class="min">10 menit</span>Main bareng tanpa layar: 2–3 permainan sederhana dengan benda yang ada di rumah, sambil mengulang suara atau kata hari ini.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARA KERJA -->
+  <section class="band-white">
+    <div class="wrap">
+      <h2>Cara kerjanya</h2>
+      <ol class="steps">
+        <li><h3>Cek gratis 2 menit</h3><p class="muted">Jawab pertanyaan singkat sesuai usia si Kecil dan lihat hasilnya langsung.</p></li>
+        <li><h3>Pilih program</h3><p class="muted">30 hari, 6 bulan, atau 1 tahun. Latihan disusun bertahap dari suara pertama sampai kalimat pendek.</p></li>
+        <li><h3>Main bareng setiap hari</h3><p class="muted">Setiap pagi Bunda menerima video 1 menit dan kartu permainan lewat WhatsApp. Seminggu sekali, catat kemajuan si Kecil.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- YANG DIDAPAT -->
+  <section>
+    <div class="wrap">
+      <h2>Yang Bunda dapatkan</h2>
+      <ul class="get">
+        <li>Video contoh 1 menit setiap hari: suara, kata, dan gerakan mulut yang mudah ditiru</li>
+        <li>Kartu permainan harian: 2–3 ide main tanpa layar, cukup 10 menit</li>
+        <li>Latihan bertahap sesuai usia, dari suara pertama sampai kalimat 2–3 kata</li>
+        <li>Cek kemajuan mingguan: Bunda catat "sudah bisa", "mencoba", atau "belum"</li>
+        <li>Tanya jawab langsung lewat WhatsApp jika Bunda bingung</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="band-white" id="harga">
+    <div class="wrap">
+      <h2>Pilih program</h2>
+      <p class="muted">Ini pendaftaran gelombang pertama. Program dimulai <b data-start>15 November 2026</b>, dan harga pendiri berlaku sampai tanggal itu. Jika program batal dimulai, uang Bunda kami kembalikan 100%.</p>
+      <div class="plans">
+        <div class="plan">
+          <h3>30 hari</h3>
+          <div class="price">Rp99rb</div>
+          <div class="per">Sekali bayar</div>
+          <ul><li>30 video dan kartu permainan</li><li>Tanya jawab lewat WhatsApp</li></ul>
+          <button class="btn btn-ghost btn-block" data-plan="p30">Pesan 30 hari via WhatsApp</button>
+        </div>
+        <div class="plan pick">
+          <span class="tag">Paling banyak dipilih</span>
+          <h3>6 bulan</h3>
+          <div class="price">Rp249rb</div>
+          <div class="per">Sekitar Rp1.400 per hari</div>
+          <ul><li>Program bertahap 6 bulan</li><li>Cek kemajuan mingguan</li><li>Tanya jawab lewat WhatsApp</li></ul>
+          <button class="btn btn-main btn-block" data-plan="p6">Pesan 6 bulan via WhatsApp</button>
+        </div>
+        <div class="plan">
+          <h3>1 tahun</h3>
+          <div class="price">Rp349rb <s>Rp599rb</s></div>
+          <div class="per">Harga pendiri, sekitar Rp960 per hari</div>
+          <ul><li>Semua isi paket 6 bulan</li><li>Lanjut sampai tahap kalimat pendek</li></ul>
+          <button class="btn btn-ghost btn-block" data-plan="p12">Pesan 1 tahun via WhatsApp</button>
+        </div>
+      </div>
+      <div class="guarantee">
+        <span class="logo-bubble" aria-hidden="true" style="flex:0 0 30px"></span>
+        <div><b>Garansi uang kembali <span data-guarantee>14</span> hari</b><br>
+        <span class="muted">Jika program tidak cocok untuk si Kecil, kirim pesan ke kami dalam <span data-guarantee>14</span> hari pertama dan uang Bunda kembali 100%.</span></div>
+      </div>
+      <p class="small muted" style="margin-top:14px">Tombol paket membuka WhatsApp kami. Pembayaran lewat transfer bank ke rekening CV Megaoasis Persada, detailnya kami kirim di chat.</p>
+    </div>
+  </section>
+
+  <!-- AHLI (tampil hanya jika CONFIG.expertName diisi) -->
+  <section id="expert" hidden>
+    <div class="wrap narrow">
+      <h2>Disusun bersama terapis wicara</h2>
+      <div class="expert">
+        <div class="avatar" id="expertInitial" aria-hidden="true"></div>
+        <div><b id="expertName"></b><br><span class="muted" id="expertTitle"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="wrap narrow faq">
+      <h2>Pertanyaan yang sering ditanyakan</h2>
+      <details><summary>Apakah ini terapi wicara?</summary><p>Bukan. Celotehku adalah program stimulasi bicara di rumah bersama orang tua. Program ini tidak menggantikan pemeriksaan dokter atau terapi wicara. Jika si Kecil sedang menjalani terapi, program ini bisa menjadi latihan tambahan di rumah. Diskusikan dulu dengan terapisnya.</p></details>
+      <details><summary>Untuk usia berapa?</summary><p>Anak usia 1 sampai 4 tahun. Latihan disesuaikan dengan hasil cek dan usia si Kecil.</p></details>
+      <details><summary>Berapa lama latihannya setiap hari?</summary><p>Sekitar 10 menit: 1 menit menonton video contoh bersama, lalu main bareng tanpa layar.</p></details>
+      <details><summary>Kapan hasilnya terlihat?</summary><p>Setiap anak berbeda. Kemajuan biasanya terlihat setelah beberapa minggu latihan rutin. Kami tidak menjanjikan hasil dalam waktu tertentu.</p></details>
+      <details><summary>Bagaimana cara bayar?</summary><p>Klik tombol paket, Bunda akan terhubung ke WhatsApp kami. Kami kirim nomor rekening CV Megaoasis Persada dan nominalnya. Setelah transfer, kirim bukti bayar di chat yang sama.</p></details>
+      <details><summary>Kapan program dimulai?</summary><p>Gelombang pertama dimulai <span data-start>15 November 2026</span>. Jika program batal dimulai, uang Bunda kami kembalikan 100%.</p></details>
+      <details><summary>Bagaimana jika tidak cocok?</summary><p>Kirim pesan ke kami dalam <span data-guarantee>14</span> hari pertama dan uang Bunda kembali 100%.</p></details>
+      <details><summary>Apakah data saya aman?</summary><p>Kami hanya menyimpan nama, nomor WhatsApp, dan jawaban cek untuk mengirim hasil dan program. Kami tidak menjual data dan tidak menyimpan rekaman suara anak.</p></details>
+    </div>
+  </section>
+
+  <section class="band-white final">
+    <div class="wrap narrow">
+      <h2>Mulai dari satu suara hari ini</h2>
+      <p class="muted">Cek perkembangan bicara si Kecil sekarang. Gratis, 2 menit, hasil langsung muncul.</p>
+      <button class="btn btn-main" data-open-quiz>Mulai cek gratis</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="disc"><b>Penting:</b> Cek ini adalah skrining awal, bukan alat diagnosis medis. Jika Bunda khawatir dengan perkembangan bicara atau pendengaran si Kecil, konsultasikan ke dokter anak atau klinik tumbuh kembang.</div>
+    <p><span data-brand>Celotehku</span> dikelola oleh CV Megaoasis Persada, Bali, Indonesia.<br>
+    <a href="#" id="privacyLink">Kebijakan Privasi</a> &nbsp; <a href="#" data-wa-link>Hubungi kami lewat WhatsApp</a></p>
+  </div>
+</footer>
+
+<!-- ===== KUIS ===== -->
+<div class="quiz" id="quiz" role="dialog" aria-modal="true" aria-label="Cek perkembangan bicara">
+  <div class="quiz-top">
+    <button id="qBack" aria-label="Kembali">‹ Kembali</button>
+    <div class="bar" aria-hidden="true"><i id="qBar"></i></div>
+    <button id="qClose" aria-label="Tutup">Tutup</button>
+  </div>
+  <div class="quiz-body"><div class="q" id="qBox" aria-live="polite"></div></div>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI — isi sebelum online
+   ============================================================ */
+const CONFIG = {
+  brand: "Celotehku",
+  waNumber: "6287742852314",         // WhatsApp untuk pesanan
+  startDate: "15 November 2026",
+  guaranteeDays: 14,
+  expertName: "",                    // kosong = bagian ahli disembunyikan
+  expertTitle: "",
+  leadWebhook: "",                   // URL Google Apps Script (lihat apps-script.gs)
+  pixelId: "",                       // ID Meta Pixel
+  privacyUrl: "#"
+};
+const PLANS = {
+  p30: { name: "Program 30 hari", price: 99000 },
+  p6:  { name: "Program 6 bulan", price: 249000 },
+  p12: { name: "Program 1 tahun", price: 349000 }
+};
+
+/* ---------- Meta Pixel ---------- */
+if (CONFIG.pixelId) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.pixelId); fbq('track', 'PageView');
+}
+function track(ev, data){ try{ if (window.fbq) fbq('track', ev, data||{}); }catch(e){} console.log('[track]', ev, data||''); }
+
+/* ---------- isi teks dari CONFIG ---------- */
+document.querySelectorAll('[data-start]').forEach(el => el.textContent = CONFIG.startDate);
+document.querySelectorAll('[data-guarantee]').forEach(el => el.textContent = CONFIG.guaranteeDays);
+document.querySelectorAll('[data-brand]').forEach(el => el.textContent = CONFIG.brand);
+document.getElementById('privacyLink').href = CONFIG.privacyUrl;
+const waUrl = (text) => `https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(text)}`;
+document.querySelectorAll('[data-wa-link]').forEach(a => { a.href = waUrl(`Halo ${CONFIG.brand}, saya mau bertanya.`); a.target = "_blank"; a.rel = "noopener"; });
+if (CONFIG.expertName) {
+  document.getElementById('expert').hidden = false;
+  document.getElementById('expertName').textContent = CONFIG.expertName;
+  document.getElementById('expertTitle').textContent = CONFIG.expertTitle;
+  document.getElementById('expertInitial').textContent = CONFIG.expertName.trim()[0].toUpperCase();
+}
+
+/* ---------- data kuis ---------- */
+const AGES = [
+  { id: "a1", label: "12–17 bulan" },
+  { id: "a2", label: "18–23 bulan" },
+  { id: "a3", label: "2 tahun (24–35 bulan)" },
+  { id: "a4", label: "3–4 tahun (36–48 bulan)" }
+];
+const MILESTONES = {
+  a1: [
+    "Menoleh saat namanya dipanggil",
+    "Mengoceh dengan suku kata berulang, misalnya “ba-ba” atau “ma-ma”",
+    "Mengucapkan 1–2 kata yang ada artinya, misalnya “mama” untuk ibunya"
+  ],
+  a2: [
+    "Mengucapkan minimal 3 kata selain “mama” dan “papa”",
+    "Mengikuti perintah satu langkah tanpa isyarat, misalnya “ambil bola”",
+    "Meniru kata atau suara yang ia dengar"
+  ],
+  a3: [
+    "Menggabungkan 2 kata, misalnya “mau susu” atau “mama pergi”",
+    "Sudah memakai banyak kata, kira-kira 50 kata atau lebih",
+    "Keluarga di rumah bisa memahami sebagian besar ucapannya"
+  ],
+  a4: [
+    "Bisa bercakap bolak-balik dengan Bunda minimal 2 kali",
+    "Bertanya “apa”, “siapa”, atau “di mana”",
+    "Berbicara dalam kalimat 3–4 kata"
+  ]
+};
+const ANSWERS = [
+  { v: 2, label: "Ya, sudah sering" },
+  { v: 1, label: "Kadang-kadang" },
+  { v: 0, label: "Belum" }
+];
+const FLAGS = [
+  "Pernah bisa mengucapkan kata, lalu kemampuan itu hilang",
+  "Jarang menoleh saat dipanggil atau tidak bereaksi pada suara keras",
+  "Jarang menatap mata atau kurang tertarik pada orang di sekitarnya",
+  "Belum mengoceh atau bersuara untuk berkomunikasi"
+];
+const AGE_TIP = {
+  a1: "Tirukan ocehannya, lalu tambahkan satu kata. Si Kecil bilang “ba-ba”, Bunda jawab “ba-ba… bola!”.",
+  a2: "Saat si Kecil menunjuk sesuatu, sebutkan namanya dengan jelas: “Oh, kucing! Meong.” Tunggu sebentar, beri kesempatan ia meniru.",
+  a3: "Perpanjang ucapannya satu kata. Si Kecil bilang “susu”, Bunda jawab “mau susu”.",
+  a4: "Beri pertanyaan pilihan, bukan ya/tidak: “Mau apel atau pisang?” Ini mendorong si Kecil menjawab dengan kata."
+};
+
+/* ---------- state ---------- */
+let S = { step: 0, age: null, ms: [], flags: [] };
+const box = document.getElementById('qBox');
+const quiz = document.getElementById('quiz');
+const TOTAL = 6; // usia + 3 milestone + tanda + kontak
+
+function openQuiz(){
+  S = { step: 0, age: null, ms: [], flags: [] };
+  quiz.classList.add('open'); document.body.style.overflow = 'hidden';
+  render(); track('ViewContent', { content_name: 'quiz_start' });
+}
+function closeQuiz(){ quiz.classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('[data-open-quiz]').forEach(b => b.addEventListener('click', openQuiz));
+document.getElementById('qClose').addEventListener('click', closeQuiz);
+document.getElementById('qBack').addEventListener('click', () => { if (S.step > 0 && S.step < TOTAL) { S.step--; render(); } else closeQuiz(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeQuiz(); } });
+
+function setBar(){ document.getElementById('qBar').style.width = Math.min(100, (S.step / TOTAL) * 100) + '%'; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function single(title, hint, opts, current, onPick){
+  box.innerHTML = `<div class="count">Pertanyaan ${S.step + 1} dari ${TOTAL - 1}</div>
+    <h2>${title}</h2>${hint ? `<p class="hint">${hint}</p>` : ''}
+    <div class="opts">${opts.map((o,i) => `<button class="opt" data-i="${i}" aria-pressed="${current === o.v || current === o.id}"><span class="dot"></span>${esc(o.label)}</button>`).join('')}</div>`;
+  box.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    box.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true');
+    setTimeout(() => { onPick(opts[+b.dataset.i]); S.step++; render(); }, 180);
+  }));
+  const first = box.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
+}
+
+function render(){
+  setBar();
+  const st = S.step;
+  if (st === 0) return single("Berapa usia si Kecil?", "Pertanyaan berikutnya disesuaikan dengan usianya.", AGES.map(a => ({...a, v: a.id})), S.age, o => S.age = o.id);
+  if (st >= 1 && st <= 3) {
+    const i = st - 1, q = MILESTONES[S.age][i];
+    return single(`Apakah si Kecil sudah… ${esc(q.charAt(0).toLowerCase() + q.slice(1))}?`, "", ANSWERS, S.ms[i], o => S.ms[i] = o.v);
+  }
+  if (st === 4) return renderFlags();
+  if (st === 5) return renderForm();
+  if (st === 6) return renderResult();
+}
+
+function renderFlags(){
+  box.innerHTML = `<div class="count">Pertanyaan 5 dari ${TOTAL - 1}</div>
+    <h2>Apakah Bunda melihat hal berikut?</h2><p class="hint">Centang semua yang sesuai.</p>
+    <div class="opts">${FLAGS.map((f,i) => `<button class="opt check" data-i="${i}" aria-pressed="${S.flags.includes(i)}"><span class="dot"></span>${esc(f)}</button>`).join('')}
+    <button class="opt check" data-none aria-pressed="${S.flags.length === 0 && S._flagsSeen ? 'true' : 'false'}"><span class="dot"></span>Tidak ada yang sesuai</button></div>
+    <div class="q-actions"><button class="btn btn-main btn-block" id="flagNext">Lanjut</button></div>`;
+  box.querySelectorAll('.opt[data-i]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.i; const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', on); box.querySelector('[data-none]').setAttribute('aria-pressed','false');
+    S.flags = on ? [...new Set([...S.flags, i])] : S.flags.filter(x => x !== i);
+  }));
+  box.querySelector('[data-none]').addEventListener('click', e => {
+    S.flags = []; box.querySelectorAll('.opt[data-i]').forEach(x => x.setAttribute('aria-pressed','false'));
+    e.currentTarget.setAttribute('aria-pressed','true');
+  });
+  document.getElementById('flagNext').addEventListener('click', () => { S._flagsSeen = true; S.step++; render(); });
+}
+
+function renderForm(){
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('bb_contact') || '{}'); } catch(e){ return {}; } })();
+  box.innerHTML = `<div class="count">Langkah terakhir</div>
+    <h2>Hasil cek sudah siap</h2><p class="hint">Isi data berikut untuk melihat hasil. Kami juga mengirim ringkasannya ke WhatsApp Bunda.</p>
+    <form id="leadForm" novalidate>
+      <div class="field"><label for="fParent">Nama Bunda/Ayah</label><input id="fParent" autocomplete="given-name" required value="${esc(saved.parent || '')}"></div>
+      <div class="field"><label for="fChild">Nama panggilan si Kecil (opsional)</label><input id="fChild" value="${esc(saved.child || '')}"></div>
+      <div class="field"><label for="fWa">Nomor WhatsApp</label><input id="fWa" type="tel" inputmode="numeric" autocomplete="tel" placeholder="08xxxxxxxxxx" required value="${esc(saved.wa || '')}"></div>
+      <label class="consent"><input type="checkbox" id="fOk" checked> <span>Saya setuju dihubungi lewat WhatsApp dan data saya diproses sesuai <a href="${CONFIG.privacyUrl}" target="_blank" rel="noopener">Kebijakan Privasi</a>.</span></label>
+      <div class="err" id="fErr" role="alert"></div>
+      <button class="btn btn-main btn-block" type="submit">Lihat hasil</button>
+    </form>`;
+  document.getElementById('leadForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const parent = fParent.value.trim(), child = fChild.value.trim();
+    let wa = fWa.value.replace(/\D/g, '');
+    if (wa.startsWith('0')) wa = '62' + wa.slice(1);
+    if (wa.startsWith('8')) wa = '62' + wa;
+    const err = document.getElementById('fErr');
+    if (!parent) return err.textContent = "Isi nama Bunda atau Ayah.";
+    if (!/^62\d{8,13}$/.test(wa)) return err.textContent = "Nomor WhatsApp belum benar. Contoh: 081234567890.";
+    if (!fOk.checked) return err.textContent = "Centang persetujuan agar kami bisa mengirim hasilnya.";
+    S.contact = { parent, child, wa };
+    try { localStorage.setItem('bb_contact', JSON.stringify(S.contact)); } catch(e){}
+    S.result = scoreIt();
+    sendLead();
+    track('Lead', { content_name: S.result.cat });
+    S.step++; render();
+  });
+}
+
+function scoreIt(){
+  const sum = S.ms.reduce((a,b) => a + (b || 0), 0);
+  const pct = Math.round(sum / 6 * 100);
+  let cat = pct >= 80 ? 'ok' : pct >= 50 ? 'mid' : 'low';
+  if (S.flags.length) cat = 'flag';
+  return { pct, cat };
+}
+
+function sendLead(){
+  const payload = {
+    time: new Date().toISOString(), ...S.contact,
+    age: AGES.find(a => a.id === S.age)?.label, answers: S.ms, flags: S.flags.map(i => FLAGS[i]),
+    score: S.result.pct, category: S.result.cat, page: location.href,
+    utm: Object.fromEntries(new URLSearchParams(location.search))
+  };
+  console.log('[lead]', payload);
+  if (!CONFIG.leadWebhook) return;
+  fetch(CONFIG.leadWebhook, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }).catch(() => {});
+}
+
+const RESULT_TEXT = {
+  ok:   { t: "Perkembangan bicaranya tampak sesuai usia", d: "Bagus sekali! Stimulasi rutin tetap penting agar kosakata si Kecil terus bertambah dan ia makin percaya diri berbicara." },
+  mid:  { t: "Si Kecil butuh stimulasi bicara yang lebih rutin", d: "Beberapa kemampuan belum muncul secara konsisten. Ini cukup umum dan sering membaik dengan latihan singkat setiap hari bersama orang tua." },
+  low:  { t: "Beberapa tahap bicara belum tercapai", d: "Kami sarankan berkonsultasi ke dokter anak atau klinik tumbuh kembang untuk pemeriksaan lebih lanjut. Sambil menunggu jadwal, latihan rutin di rumah tetap bermanfaat." },
+  flag: { t: "Ada tanda yang sebaiknya diperiksa dokter", d: "Tanda yang Bunda centang sebaiknya diperiksakan ke dokter anak, termasuk pemeriksaan pendengaran. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian." }
+};
+
+function renderResult(){
+  const { pct, cat } = S.result, R = RESULT_TEXT[cat];
+  const name = S.contact.child || 'si Kecil';
+  const tips = ["Setelah bertanya atau memberi contoh kata, tunggu 5 detik. Beri " + esc(name) + " kesempatan mencoba menjawab.", AGE_TIP[S.age]];
+  tips.push("Ganti sebagian waktu layar dengan 10 menit main bareng. Ceritakan apa yang Bunda lakukan dengan kalimat pendek: “Bunda cuci piring. Piringnya basah.”");
+
+  box.innerHTML = `
+    <div class="result-head ${cat}">
+      <div class="count">Hasil cek ${esc(name)}</div>
+      <h2 style="margin-bottom:.3em">${R.t}</h2>
+      <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      <div class="small"><b>${pct}%</b> tahap bicara sesuai usia sudah muncul</div>
+    </div>
+    <p>${R.d}</p>
+    ${cat === 'flag' ? `<div class="flag-box"><b>Yang Bunda centang:</b><ul style="margin:8px 0 0;padding-left:20px">${S.flags.map(i => `<li>${esc(FLAGS[i])}</li>`).join('')}</ul></div>` : ''}
+    <h3>3 hal yang bisa dicoba mulai hari ini</h3>
+    <ul class="tips">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
+    <div style="margin-top:26px;display:grid;gap:12px">
+      <button class="btn btn-main btn-block" id="toPlans">${cat === 'flag' || cat === 'low' ? 'Lihat program latihan di rumah' : 'Lihat program 10 menit sehari'}</button>
+      <a class="btn btn-ghost btn-block" id="sendWa" target="_blank" rel="noopener">Kirim hasil ini ke WhatsApp saya</a>
+    </div>
+    ${cat === 'flag' || cat === 'low' ? '<p class="small muted" style="margin-top:14px">Program Celotehku adalah latihan pendamping di rumah, bukan pengganti pemeriksaan dokter atau terapi wicara.</p>' : ''}
+  `;
+  requestAnimationFrame(() => { const m = document.getElementById('meterFill'); if (m) m.style.width = pct + '%'; });
+  document.getElementById('toPlans').addEventListener('click', () => { closeQuiz(); document.getElementById('harga').scrollIntoView(); });
+  const summary = `Halo ${CONFIG.brand}, saya ${S.contact.parent}. Hasil cek bicara ${name} (${AGES.find(a => a.id === S.age).label}): ${R.t} (${pct}%). Saya ingin tahu lebih lanjut tentang programnya.`;
+  document.getElementById('sendWa').href = waUrl(summary);
+  document.getElementById('sendWa').addEventListener('click', () => track('Contact'));
+}
+
+/* ---------- pesan via WhatsApp ---------- */
+const rp = n => 'Rp' + n.toLocaleString('id-ID');
+document.querySelectorAll('[data-plan]').forEach(b => b.addEventListener('click', () => {
+  const plan = PLANS[b.dataset.plan];
+  track('InitiateCheckout', { value: plan.price, currency: 'IDR', content_name: plan.name });
+  let c = {}; try { c = JSON.parse(localStorage.getItem('bb_contact') || '{}'); } catch(e){}
+  const who = c.parent ? ` Saya ${c.parent}${c.child ? ', orang tua ' + c.child : ''}.` : '';
+  const msg = `Halo ${CONFIG.brand},${who} saya mau pesan ${plan.name} (${rp(plan.price)}). Bagaimana cara bayarnya?`;
+  window.open(waUrl(msg), '_blank', 'noopener');
+}));
+</script>
+</body>
+</html>
