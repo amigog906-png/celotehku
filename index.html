@@ -229,6 +229,9 @@ body.has-sticky{padding-bottom:84px}
 .pay-row b{font-size:1.05rem}
 .copy{border:2px solid var(--teal);background:#fff;color:var(--teal-dark);font:800 .85rem var(--body);border-radius:999px;padding:7px 12px;cursor:pointer;white-space:nowrap}
 .pay-note{font-size:.85rem;color:var(--ink-soft);margin-top:12px}
+.q-intro{background:var(--mango-soft);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:18px;display:flex;flex-direction:column;gap:2px}
+.q-intro b{font:800 1.05rem var(--display)}
+.q-intro span{font-size:.88rem;color:var(--ink-soft)}
 .quiz{position:fixed;inset:0;z-index:50;background:var(--sky);display:none;flex-direction:column}
 .quiz.open{display:flex}
 .quiz-top{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--white)}
@@ -636,6 +639,8 @@ document.getElementById('heroAges').innerHTML = AGES.map(a => `<button class="ag
 document.querySelectorAll('#heroAges .age-btn').forEach(b => b.addEventListener('click', () => openQuiz(b.dataset.age)));
 function closeQuiz(){ quiz.classList.remove('open'); document.body.style.overflow = ''; }
 document.querySelectorAll('[data-open-quiz]').forEach(b => b.addEventListener('click', () => openQuiz()));
+/* Dari iklan (utm_source) atau ?quiz=1: kuis langsung terbuka layar penuh */
+setTimeout(() => { const q = new URLSearchParams(location.search); if (q.has('utm_source') || q.get('quiz') === '1') openQuiz(); }, 0);
 document.getElementById('qClose').addEventListener('click', closeQuiz);
 document.getElementById('qBack').addEventListener('click', () => { if (S.step > 0 && S.step < TOTAL) { S.step--; render(); } else closeQuiz(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (pay.classList.contains('open')) closePay(); else closeQuiz(); } });
@@ -659,7 +664,12 @@ function render(){
   setBar();
   const st = S.step;
   try { if (window.fbq && st >= 1 && st <= 6) fbq('trackCustom', 'QuizStep', { step: st }); } catch(e){}
-  if (st === 0) return single("Berapa usia si Kecil?", "Pertanyaan berikutnya disesuaikan dengan usianya.", AGES.map(a => ({...a, v: a.id})), S.age, o => S.age = o.id);
+  if (st === 0) {
+    single("Berapa usia si Kecil?", "Pertanyaan berikutnya disesuaikan dengan usianya.", AGES.map(a => ({...a, v: a.id})), S.age, o => S.age = o.id);
+    box.insertAdjacentHTML('afterbegin', `<div class="q-intro"><b>Cek perkembangan bicara si Kecil</b><span>Gratis · 5 pertanyaan · 2 menit · hasil langsung muncul</span></div>`);
+    requestAnimationFrame(() => { const f = document.activeElement; if (f && f.classList && f.classList.contains('opt')) f.blur(); });
+    return;
+  }
   if (st >= 1 && st <= 3) {
     const i = st - 1, q = MILESTONES[S.age][i];
     return single(`Apakah si Kecil sudah… ${esc(q.charAt(0).toLowerCase() + q.slice(1))}?`, "", ANSWERS, S.ms[i], o => S.ms[i] = o.v);
