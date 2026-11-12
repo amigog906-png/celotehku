@@ -115,7 +115,7 @@ section{padding:64px 0}
 
 /* harga */
 .plans{display:grid;gap:18px;margin-top:30px}
-@media(min-width:880px){.plans{grid-template-columns:1fr 1.12fr 1fr;align-items:center}}
+@media(min-width:760px){.plans{grid-template-columns:1.1fr 1fr;align-items:center;max-width:820px}}
 .plan{background:var(--white);border:2px solid var(--line);border-radius:var(--r-lg);padding:26px 24px;display:flex;flex-direction:column;gap:12px}
 .plan h3{margin:0}
 .plan .price{font:800 2.3rem/1 var(--display)}
@@ -171,6 +171,34 @@ footer .disc{background:var(--white);border:1px solid var(--line);border-radius:
 .compare{margin-top:14px;font-size:.92rem;color:var(--ink-soft)}
 
 /* rekomendasi di hasil */
+.invite{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:20px;margin-top:26px}
+.invite h3{color:#fff;margin:6px 0 10px}
+.inv-timer{margin-top:12px;font:800 1.05rem var(--display);color:var(--mango);font-variant-numeric:tabular-nums}
+.inv-timer:empty{display:none}
+.countdown{font-variant-numeric:tabular-nums}
+.inv-go{margin-top:14px;width:100%;border:0;border-radius:999px;background:var(--mango);color:var(--ink);font:800 .95rem var(--body);padding:12px;cursor:pointer}
+.invite + h3,.anchor + h3{margin-top:24px}
+.value li{padding-top:10px;padding-bottom:10px}
+.inv-tag{display:inline-block;background:var(--mango);color:var(--ink);font-weight:800;font-size:.8rem;border-radius:999px;padding:4px 10px}
+.inv-meta{display:flex;flex-wrap:wrap;gap:8px}
+.inv-meta span{background:rgba(255,255,255,.12);border-radius:999px;padding:5px 10px;font-size:.85rem;font-weight:700}
+.value{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px}
+.value li{background:var(--white);border-radius:var(--r-sm);padding:12px 14px 12px 44px;position:relative}
+.value li::before{content:"✓";position:absolute;left:14px;top:12px;width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;font:800 .75rem/20px var(--body);text-align:center}
+.value b{display:block}.value span{font-size:.9rem;color:var(--ink-soft)}
+.anchor{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.anchor div{background:var(--white);border-radius:var(--r-sm);padding:14px;display:flex;flex-direction:column;gap:2px}
+.anchor span{font-size:.85rem;color:var(--ink-soft)}.anchor b{font:800 1.3rem/1.2 var(--display)}.anchor small{font-size:.78rem;color:var(--ink-soft)}
+.anchor .us{background:var(--mango-soft);border:2px solid var(--mango)}
+.pp-group{display:grid;gap:10px;margin-top:10px}
+.pp{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--white);border:2px solid var(--line);border-radius:var(--r-md);padding:14px;cursor:pointer;font:inherit;color:inherit}
+.pp.sel{border-color:var(--teal);background:#E6F4F2}
+.pp-dot{flex:0 0 20px;height:20px;border-radius:50%;border:2px solid var(--line);background:#fff}
+.pp.sel .pp-dot{border:6px solid var(--teal)}
+.pp-main{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.pp-main b{font-size:1.05rem}.pp-main em{font-style:normal;background:var(--mango);border-radius:999px;padding:2px 8px;font-size:.75rem;font-weight:800}
+.pp-main small{flex-basis:100%;color:var(--ink-soft);font-size:.82rem}
+.pp-price{font:800 1.1rem var(--display)}
 .reco{background:var(--mango);border-radius:var(--r-lg);padding:20px;margin-top:22px}
 .reco .price{font:800 2rem/1 var(--display);margin:6px 0 4px}
 
@@ -264,7 +292,7 @@ body.has-sticky{padding-bottom:84px}
         <p class="note">Gratis, tanpa membuat akun.</p>
         <ul class="trust">
           <li><span>Garansi uang kembali <span data-guarantee>14</span> hari</span></li>
-          <li>Pesan dan tanya langsung lewat WhatsApp</li>
+          <li>Grup Bunda seusia dan sesi live bersama terapis wicara</li>
           <li>Dikelola perusahaan terdaftar, CV Mega Oasis Persada</li>
         </ul>
       </div>
@@ -333,8 +361,8 @@ body.has-sticky{padding-bottom:84px}
       <h2>Cara kerjanya</h2>
       <ol class="steps">
         <li><h3>Cek gratis 2 menit</h3><p class="muted">Jawab pertanyaan singkat sesuai usia si Kecil dan lihat hasilnya langsung.</p></li>
-        <li><h3>Pilih program</h3><p class="muted">30 hari, 6 bulan, atau 1 tahun. Latihan disusun bertahap dari suara pertama sampai kalimat pendek.</p></li>
-        <li><h3>Main bareng setiap hari</h3><p class="muted">Setiap pagi Bunda menerima video 1 menit dan kartu permainan lewat WhatsApp. Seminggu sekali, catat kemajuan si Kecil.</p></li>
+        <li><h3>Gabung Gelombang <span data-wave>1</span></h3><p class="muted">Pilih 3 atau 6 bulan. Bunda masuk grup WhatsApp sesuai usia si Kecil, kelas mulai bersama pada <span data-start>1 Desember 2026</span>.</p></li>
+        <li><h3>Main bareng setiap hari</h3><p class="muted">Setiap pagi: video 1 menit dan kartu permainan. Sore: setor latihan di grup. Setiap 2 minggu: cek ulang kemajuan. Setiap bulan: sesi live bersama terapis wicara.</p></li>
       </ol>
     </div>
   </section>
@@ -343,44 +371,31 @@ body.has-sticky{padding-bottom:84px}
   <section class="band-white">
     <div class="wrap">
       <h2>Yang Bunda dapatkan</h2>
-      <ul class="get">
-        <li>Video contoh 1 menit setiap hari: suara, kata, dan gerakan mulut yang mudah ditiru</li>
-        <li>Kartu permainan harian: 2–3 ide main tanpa layar, cukup 10 menit</li>
-        <li>Latihan bertahap sesuai usia, dari suara pertama sampai kalimat 2–3 kata</li>
-        <li>Cek kemajuan mingguan: Bunda catat "sudah bisa", "mencoba", atau "belum"</li>
-        <li>Tanya jawab langsung lewat WhatsApp jika Bunda bingung</li>
-      </ul>
+      <ul class="get" id="valueList"></ul>
     </div>
   </section>
 
   <!-- HARGA -->
   <section id="harga">
     <div class="wrap">
-      <h2>Pilih program</h2>
+      <h2>Gabung Kelas Celotehku, Gelombang <span data-wave>1</span></h2>
       <div class="countdown" id="countdown" hidden></div>
-      <p class="muted">Ini pendaftaran gelombang pertama. Program dimulai <b data-start>1 Desember 2026</b>. Harga pendiri berlaku untuk pendaftar sampai <b data-until>22 November 2026</b>. Jika program batal dimulai, uang Bunda kami kembalikan 100%.</p>
+      <p class="muted">Kelas mulai <b data-start>1 Desember 2026</b> dan dijalankan bersama dalam grup Bunda sesuai usia si Kecil. Kuota <b data-cohort>100</b> Bunda, pendaftaran ditutup <b data-until>14 November 2026</b> atau saat kuota penuh. Jika kelas batal dimulai, uang Bunda kami kembalikan 100%.</p>
       <div class="plans">
-        <div class="plan">
-          <h3>30 hari</h3>
-          <div class="price">Rp99rb</div>
-          <div class="per">Sekali bayar</div>
-          <ul><li>30 video dan kartu permainan</li><li>Tanya jawab lewat WhatsApp</li></ul>
-          <button class="btn btn-ghost btn-block" data-plan="p30">Pesan 30 hari</button>
-        </div>
         <div class="plan pick">
-          <span class="tag">Paling banyak dipilih</span>
+          <span class="tag">Rekomendasi</span>
           <h3>6 bulan</h3>
-          <div class="price">Rp249rb</div>
-          <div class="per">Sekitar Rp1.400 per hari</div>
-          <ul><li>Program bertahap 6 bulan</li><li>Cek kemajuan mingguan</li><li>Tanya jawab lewat WhatsApp</li></ul>
-          <button class="btn btn-main btn-block" data-plan="p6">Pesan 6 bulan</button>
+          <div class="price">Rp299rb</div>
+          <div class="per">Sekitar Rp1.700 per hari</div>
+          <ul><li>Program harian bertahap 6 bulan</li><li>Grup WhatsApp Bunda seusia</li><li>6 sesi live bersama terapis wicara</li><li>Cek ulang setiap 2 minggu</li></ul>
+          <button class="btn btn-main btn-block" data-plan="p6">Gabung 6 bulan</button>
         </div>
         <div class="plan">
-          <h3>1 tahun</h3>
-          <div class="price">Rp349rb <s>Rp599rb</s></div>
-          <div class="per">Harga pendiri, sekitar Rp960 per hari</div>
-          <ul><li>Semua isi paket 6 bulan</li><li>Lanjut sampai tahap kalimat pendek</li></ul>
-          <button class="btn btn-ghost btn-block" data-plan="p12">Pesan 1 tahun</button>
+          <h3>3 bulan</h3>
+          <div class="price">Rp199rb</div>
+          <div class="per">Sekitar Rp2.200 per hari</div>
+          <ul><li>Program harian bertahap 3 bulan</li><li>Grup WhatsApp Bunda seusia</li><li>3 sesi live bersama terapis wicara</li><li>Cek ulang setiap 2 minggu</li></ul>
+          <button class="btn btn-ghost btn-block" data-plan="p3">Gabung 3 bulan</button>
         </div>
       </div>
       <div class="guarantee">
@@ -388,8 +403,8 @@ body.has-sticky{padding-bottom:84px}
         <div><b>Garansi uang kembali <span data-guarantee>14</span> hari</b><br>
         <span class="muted">Jika program tidak cocok untuk si Kecil, kirim pesan ke kami dalam <span data-guarantee>14</span> hari pertama dan uang Bunda kembali 100%.</span></div>
       </div>
-      <p class="small muted" style="margin-top:14px">Tombol paket membuka WhatsApp kami. Pembayaran lewat transfer bank ke rekening CV Mega Oasis Persada, detailnya kami kirim di chat.</p>
-      <p class="compare">Sebagai perbandingan, satu sesi terapi wicara di klinik umumnya Rp120–475 ribu. Celotehku bukan pengganti terapi, melainkan latihan harian di rumah bersama orang tua.</p>
+      <p class="small muted" style="margin-top:14px">Pembayaran lewat transfer ke rekening BNI a.n. CV Mega Oasis Persada. Setelah bukti transfer kami terima, Bunda mendapat kuitansi dan tautan grup.</p>
+      <p class="compare">Sebagai perbandingan, satu sesi terapi wicara di klinik umumnya Rp120–475 ribu. Kelas Celotehku 6 bulan seharga sekitar satu sesi. Celotehku bukan pengganti terapi, melainkan latihan harian di rumah bersama orang tua.</p>
     </div>
   </section>
 
@@ -412,10 +427,12 @@ body.has-sticky{padding-bottom:84px}
       <details><summary>Untuk usia berapa?</summary><p>Anak usia 1 sampai 4 tahun. Latihan disesuaikan dengan hasil cek dan usia si Kecil.</p></details>
       <details><summary>Berapa lama latihannya setiap hari?</summary><p>Sekitar 10 menit: 1 menit menonton video contoh bersama, lalu main bareng tanpa layar.</p></details>
       <details><summary>Kapan hasilnya terlihat?</summary><p>Setiap anak berbeda. Kemajuan biasanya terlihat setelah beberapa minggu latihan rutin. Kami tidak menjanjikan hasil dalam waktu tertentu.</p></details>
-      <details><summary>Bagaimana cara bayar?</summary><p>Klik tombol paket, Bunda akan terhubung ke WhatsApp kami. Kami kirim nomor rekening CV Mega Oasis Persada dan nominalnya. Setelah transfer, kirim bukti bayar di chat yang sama.</p></details>
-      <details><summary>Kapan program dimulai?</summary><p>Gelombang pertama dimulai <span data-start>1 Desember 2026</span>. Jika program batal dimulai, uang Bunda kami kembalikan 100%.</p></details>
+      <details><summary>Bagaimana cara bayar?</summary><p>Pilih durasi, lalu transfer ke rekening BNI 1918709520 a.n. CV Mega Oasis Persada. Kirim bukti transfer lewat tombol WhatsApp yang muncul. Kami konfirmasi, kirim kuitansi, dan tautan grup kelas.</p></details>
+      <details><summary>Apa isi grup WhatsApp?</summary><p>Grup Bunda yang anaknya seusia, dipandu tim Celotehku. Di sana Bunda bisa setor latihan, bertanya, dan berbagi cerita. Program harian tetap dikirim setiap pagi.</p></details>
+      <details><summary>Siapa yang memandu sesi live?</summary><p>Terapis wicara mitra Celotehku. Jadwal sesi diumumkan di grup, dan rekamannya bisa ditonton ulang jika Bunda berhalangan.</p></details>
+      <details><summary>Kapan kelas dimulai?</summary><p>Gelombang <span data-wave>1</span> dimulai <span data-start>1 Desember 2026</span>. Pendaftaran ditutup <span data-until>14 November 2026</span> atau saat kuota penuh. Jika kelas batal dimulai, uang Bunda kami kembalikan 100%.</p></details>
       <details><summary>Bagaimana jika tidak cocok?</summary><p>Kirim pesan ke kami dalam <span data-guarantee>14</span> hari pertama dan uang Bunda kembali 100%.</p></details>
-      <details><summary>Apakah data saya aman?</summary><p>Kami hanya menyimpan nama, nomor WhatsApp, dan jawaban cek untuk mengirim hasil dan program. Kami tidak menjual data dan tidak menyimpan rekaman suara anak.</p></details>
+      <details><summary>Apakah data saya aman?</summary><p>Kami hanya menyimpan nama, nomor WhatsApp, dan jawaban cek untuk mengirim hasil dan program. Kami tidak menjual data. Video atau voice note yang Bunda kirim ke grup hanya dibagikan di grup tersebut.</p></details>
     </div>
   </section>
 
@@ -450,19 +467,19 @@ body.has-sticky{padding-bottom:84px}
 <!-- ===== KUIS ===== -->
 <div class="pay" id="pay" role="dialog" aria-modal="true" aria-label="Pembayaran">
   <div class="pay-card">
-    <div class="pay-top"><div><div class="small muted">Pesan program</div><h3 id="payName" style="margin:2px 0 0">Program 6 bulan</h3></div><button class="pay-x" id="payClose" aria-label="Tutup">Tutup ✕</button></div>
-    <div class="pay-price" id="payPrice">Rp249.000</div>
+    <div class="pay-top"><div><div class="small muted">Gabung Kelas Celotehku · Gelombang <span data-wave>1</span></div><h3 id="payName" style="margin:2px 0 0">Program 6 bulan</h3></div><button class="pay-x" id="payClose" aria-label="Tutup">Tutup ✕</button></div>
+    <div class="pay-price" id="payPrice">Rp299.000</div>
     <div class="pay-step">1. Transfer ke rekening perusahaan</div>
     <div class="pay-box">
       <div class="pay-row"><span>Bank</span><b>BNI</b></div>
       <div class="pay-row"><span>No. rekening<br><b id="payAcc">1918709520</b></span><button class="copy" data-copy="acc">Salin</button></div>
       <div class="pay-row"><span>Atas nama</span><b>CV Mega Oasis Persada</b></div>
-      <div class="pay-row"><span>Jumlah<br><b id="payAmt">249000</b></span><button class="copy" data-copy="amt">Salin</button></div>
+      <div class="pay-row"><span>Jumlah<br><b id="payAmt">299000</b></span><button class="copy" data-copy="amt">Salin</button></div>
     </div>
     <div class="pay-step">2. Kirim bukti transfer</div>
     <a class="btn btn-main btn-block" id="payProof" target="_blank" rel="noopener">Kirim bukti transfer via WhatsApp</a>
     <button class="btn btn-ghost btn-block" id="payAsk" style="margin-top:10px">Tanya dulu via WhatsApp</button>
-    <p class="pay-note">Program mulai <span data-start>1 Desember 2026</span>. Garansi <span data-guarantee>14</span> hari: tidak cocok, uang kembali 100%. Kuitansi dikirim atas nama CV Mega Oasis Persada setelah transfer dikonfirmasi.</p>
+    <p class="pay-note">Kelas mulai <span data-start>1 Desember 2026</span>. Setelah transfer dikonfirmasi, Bunda mendapat kuitansi dan tautan grup. Garansi <span data-guarantee>14</span> hari: tidak cocok, uang kembali 100%.</p>
   </div>
 </div>
 
@@ -482,10 +499,14 @@ body.has-sticky{padding-bottom:84px}
 const CONFIG = {
   brand: "Celotehku",
   waNumber: "6287742852314",         // WhatsApp untuk pesanan
-  startDate: "1 Desember 2026",
-  priceUntil: "22 November 2026",
-  deadlineISO: "2026-11-23T00:00:00+07:00", // pendaftaran gelombang pertama ditutup (WIB)
+  // Gelombang bergulir: Gelombang 1 ditutup 15 Nov 00:00 WIB, lalu setiap 2 hari dibuka gelombang baru.
+  // Kelas tiap gelombang mulai 16 hari setelah pendaftarannya ditutup.
+  firstCloseISO: "2026-11-15T00:00:00+07:00",
+  waveEveryDays: 2,
+  startAfterCloseDays: 16,
+  wave: 1, startDate: "", priceUntil: "", deadlineISO: "",
   guaranteeDays: 14,
+  cohortSize: 100,
   expertName: "",                    // kosong = bagian ahli disembunyikan
   expertTitle: "",
   leadWebhook: "",                   // URL Google Apps Script (lihat apps-script.gs)
@@ -493,10 +514,20 @@ const CONFIG = {
   privacyUrl: "privasi.html"
 };
 const PLANS = {
-  p30: { name: "Program 30 hari", price: 99000 },
-  p6:  { name: "Program 6 bulan", price: 249000 },
-  p12: { name: "Program 1 tahun", price: 349000 }
+  p6: { name: "Kelas Celotehku 6 bulan", short: "6 bulan", price: 299000, perDay: "Rp1.700" },
+  p3: { name: "Kelas Celotehku 3 bulan", short: "3 bulan", price: 199000, perDay: "Rp2.200" }
 };
+const VALUE = [
+  ["Program harian sesuai usia", "Setiap pagi: video contoh 1 menit dan kartu permainan 10 menit, disusun bertahap dari hasil cek si Kecil."],
+  ["Grup WhatsApp Bunda seusia", "Bergabung dengan Bunda lain yang anaknya seusia. Saling cerita, saling menyemangati, tidak merasa sendirian."],
+  ["Setor latihan, dapat tanggapan", "Kirim video atau voice note singkat latihan hari itu di grup. Tim Celotehku memberi tanggapan dan semangat."],
+  ["Sesi live bulanan bersama terapis wicara", "Tanya jawab langsung setiap bulan. Bunda bisa menanyakan kebiasaan dan kemajuan si Kecil."],
+  ["Cek ulang setiap 2 minggu", "Isi cek yang sama dan lihat perubahan si Kecil dibanding hari pertama."],
+  ["Buku Kata Pertama (PDF)", "Lembar untuk mencatat setiap kata baru si Kecil. Bisa dicetak dan ditempel di kulkas."],
+  ["Panduan “Kapan perlu ke dokter”", "Tanda yang perlu diperiksakan dan ke mana Bunda bisa bertanya."],
+  ["Garansi 14 hari", "Tidak cocok? Kabari kami dalam 14 hari pertama, uang kembali 100%."]
+];
+const AGE_GROUP = { a1: "1–2 tahun", a2: "1–2 tahun", a3: "2–4 tahun", a4: "2–4 tahun" };
 
 /* ---------- Meta Pixel ---------- */
 if (CONFIG.pixelId) {
@@ -504,14 +535,31 @@ if (CONFIG.pixelId) {
   fbq('init', CONFIG.pixelId); fbq('track', 'PageView');
 }
 function track(ev, data){ try{ if (window.fbq) fbq('track', ev, data||{}); }catch(e){} console.log('[track]', ev, data||''); }
-/* Purchase manual: buka celotehku.com/?paid=249000 setelah pembayaran diterima */
+/* Purchase manual: buka celotehku.com/?paid=299000 setelah pembayaran diterima */
 (() => { const q = new URLSearchParams(location.search), v = parseInt(q.get('paid'), 10);
   if (v > 0) { track('Purchase', { value: v, currency: 'IDR' }); q.delete('paid');
     history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '')); } })();
 
 /* ---------- isi teks dari CONFIG ---------- */
-document.querySelectorAll('[data-start]').forEach(el => el.textContent = CONFIG.startDate);
+function computeWave(){
+  const DAY = 864e5, first = Date.parse(CONFIG.firstCloseISO), step = CONFIG.waveEveryDays * DAY, now = Date.now();
+  const n = now < first ? 0 : Math.floor((now - first) / step) + 1;
+  const close = first + n * step;
+  const fmt = t => new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }).format(new Date(t));
+  CONFIG.wave = n + 1;
+  CONFIG.deadlineISO = new Date(close).toISOString();
+  CONFIG.priceUntil = fmt(close - 1000);                 // hari terakhir pendaftaran
+  CONFIG.startDate = fmt(close + CONFIG.startAfterCloseDays * DAY);
+}
+function fillWave(){
+  document.querySelectorAll('[data-wave]').forEach(el => el.textContent = CONFIG.wave);
+  document.querySelectorAll('[data-start]').forEach(el => el.textContent = CONFIG.startDate);
+  document.querySelectorAll('[data-until]').forEach(el => el.textContent = CONFIG.priceUntil);
+}
+computeWave(); fillWave();
 document.querySelectorAll('[data-until]').forEach(el => el.textContent = CONFIG.priceUntil);
+document.querySelectorAll('[data-cohort]').forEach(el => el.textContent = CONFIG.cohortSize);
+document.getElementById('valueList').innerHTML = VALUE.map(v => `<li><span><b>${v[0]}.</b> ${v[1]}</span></li>`).join('');
 document.querySelectorAll('[data-guarantee]').forEach(el => el.textContent = CONFIG.guaranteeDays);
 document.querySelectorAll('[data-brand]').forEach(el => el.textContent = CONFIG.brand);
 document.getElementById('privacyLink').href = CONFIG.privacyUrl;
@@ -714,21 +762,39 @@ function renderResult(){
     ${cat === 'flag' ? `<div class="flag-box"><b>Yang Bunda centang:</b><ul style="margin:8px 0 0;padding-left:20px">${S.flags.map(i => `<li>${esc(FLAGS[i])}</li>`).join('')}</ul></div>` : ''}
     <h3>3 hal yang bisa dicoba mulai hari ini</h3>
     <ul class="tips">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
-    <div class="reco">
-      <div class="small">Langkah berikutnya untuk ${esc(name)}</div>
-      <h3 style="margin:2px 0 4px">Gratis: 3 hari latihan bicara lewat WhatsApp</h3>
-      <div class="small">Setiap hari Bunda menerima 1 permainan 10 menit yang sesuai usia ${esc(name)}. Tanpa bayar, tanpa aplikasi.</div>
-      <a class="btn btn-main btn-block" id="freeWa" target="_blank" rel="noopener" style="margin-top:14px">Kirim 3 hari latihan gratis ke WhatsApp saya</a>
+    <div class="invite">
+      <div class="inv-tag">Undangan · Gelombang ${CONFIG.wave}</div>
+      <h3>${esc(name.charAt(0).toUpperCase() + name.slice(1))} cocok untuk Kelas Celotehku, grup usia ${AGE_GROUP[S.age]}</h3>
+      <div class="inv-meta"><span>Mulai ${CONFIG.startDate}</span><span>Kuota ${CONFIG.cohortSize} Bunda</span><span>Pendaftaran tutup ${CONFIG.priceUntil}</span></div>
+      <div class="inv-timer" data-countdown>${countdownText() ? 'Pendaftaran ditutup dalam ' + countdownText() : ''}</div>
+      <button type="button" class="inv-go" id="toJoin">Lihat harga dan gabung · mulai Rp199rb ↓</button>
     </div>
-    <div style="margin-top:14px;display:grid;gap:12px">
-      <button class="btn btn-ghost btn-block" id="recoOrder">Langsung pesan Program 6 bulan (Rp249rb)</button>
-      <button class="btn btn-ghost btn-block" id="toPlans">Lihat semua paket</button>
+    <h3>Yang Bunda dapatkan</h3>
+    <ul class="value">${VALUE.map(v => `<li><b>${v[0]}</b><span>${v[1]}</span></li>`).join('')}</ul>
+    <div class="anchor">
+      <div><span>Terapi wicara di klinik</span><b>Rp120–475rb</b><small>untuk 1 sesi</small></div>
+      <div class="us"><span>Kelas Celotehku</span><b>Rp299rb</b><small>untuk 6 bulan, sekitar Rp1.700 per hari</small></div>
     </div>
+    <h3>Pilih durasi</h3>
+    <div class="pp-group" role="radiogroup" aria-label="Durasi program">
+      ${Object.entries(PLANS).map(([k, p], i) => `<button type="button" class="pp${i === 0 ? ' sel' : ''}" role="radio" aria-checked="${i === 0}" data-k="${k}"><span class="pp-dot"></span><span class="pp-main"><b>${p.short}</b>${i === 0 ? '<em>Rekomendasi</em>' : ''}<small>sekitar ${p.perDay} per hari</small></span><span class="pp-price">${rp(p.price)}</span></button>`).join('')}
+    </div>
+    <button class="btn btn-main btn-block" id="joinBtn" style="margin-top:16px">Gabung Gelombang ${CONFIG.wave} · Bayar Rp299.000</button>
+    <p class="small muted" style="text-align:center;margin:10px 0 0">Transfer BNI a.n. CV Mega Oasis Persada. Garansi ${CONFIG.guaranteeDays} hari uang kembali.</p>
+    <p class="small" style="text-align:center;margin:14px 0 0"><a href="#" id="askWa">Ada pertanyaan? Chat WhatsApp</a> · <a href="#" id="freeWa" target="_blank" rel="noopener">Belum yakin? Coba 3 hari gratis</a></p>
     ${cat === 'flag' || cat === 'low' ? '<p class="small muted" style="margin-top:14px">Program Celotehku adalah latihan pendamping di rumah, bukan pengganti pemeriksaan dokter atau terapi wicara.</p>' : ''}
   `;
   requestAnimationFrame(() => { const m = document.getElementById('meterFill'); if (m) m.style.width = pct + '%'; });
-  document.getElementById('toPlans').addEventListener('click', () => { closeQuiz(); document.getElementById('harga').scrollIntoView(); });
-  document.getElementById('recoOrder').addEventListener('click', () => openPay('p6'));
+  let pick = 'p6';
+  const joinBtn = document.getElementById('joinBtn');
+  box.querySelectorAll('.pp').forEach(b => b.addEventListener('click', () => {
+    pick = b.dataset.k;
+    box.querySelectorAll('.pp').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-checked', x === b); });
+    joinBtn.textContent = `Gabung Gelombang ${CONFIG.wave} · Bayar ${rp(PLANS[pick].price)}`;
+  }));
+  joinBtn.addEventListener('click', () => openPay(pick));
+  document.getElementById('toJoin').addEventListener('click', () => document.querySelector('.pp-group').scrollIntoView({ behavior: 'smooth', block: 'center' }));
+  document.getElementById('askWa').addEventListener('click', e => { e.preventDefault(); track('Contact', { content_name: 'result_question' }); window.open(waUrl(`Halo ${CONFIG.brand}, saya ${S.contact.parent}. Saya mau tanya dulu tentang Kelas Celotehku Gelombang ${CONFIG.wave} untuk ${name}.`), '_blank', 'noopener'); });
   const ageLabel = AGES.find(a => a.id === S.age).label;
   const msg = `Halo ${CONFIG.brand}, saya ${S.contact.parent}. Saya mau 3 hari latihan gratis untuk ${name}, usia ${ageLabel}. Hasil cek: ${R.t} (${pct}%).`;
   const fw = document.getElementById('freeWa');
@@ -757,7 +823,7 @@ function openPay(key){
   document.getElementById('payAmt').textContent = String(plan.price);
   const c = contactInfo();
   const who = c.parent ? ` Saya ${c.parent}${c.child ? ', orang tua ' + c.child : ''}.` : '';
-  document.getElementById('payProof').href = waUrl(`Halo ${CONFIG.brand}.${who} Saya sudah transfer ${rp(plan.price)} ke BNI ${BANK.acc} untuk ${plan.name}. Berikut bukti transfernya:`);
+  document.getElementById('payProof').href = waUrl(`Halo ${CONFIG.brand}.${who} Saya sudah transfer ${rp(plan.price)} ke BNI ${BANK.acc} untuk ${plan.name}, Gelombang ${CONFIG.wave} (mulai ${CONFIG.startDate}). Berikut bukti transfernya:`);
   pay.classList.add('open'); document.body.style.overflow = 'hidden';
   track('InitiateCheckout', { value: plan.price, currency: 'IDR', content_name: plan.name });
 }
@@ -773,18 +839,22 @@ pay.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () 
 }));
 document.querySelectorAll('[data-plan]').forEach(b => b.addEventListener('click', () => openPay(b.dataset.plan)));
 
-/* ---------- hitung mundur ---------- */
+/* ---------- hitung mundur (sampai CONFIG.deadlineISO, WIB) ---------- */
+let DEADLINE = new Date(CONFIG.deadlineISO).getTime();
+function countdownText(){
+  const ms = DEADLINE - Date.now(); if (isNaN(ms) || ms <= 0) return '';
+  const d = Math.floor(ms / 864e5), hr = Math.floor(ms % 864e5 / 36e5), mn = Math.floor(ms % 36e5 / 6e4), sc = Math.floor(ms % 6e4 / 1e3);
+  return `${d > 0 ? d + ' hari ' : ''}${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}:${String(sc).padStart(2,'0')}`;
+}
 (() => {
-  const el = document.getElementById('countdown'); const end = new Date(CONFIG.deadlineISO).getTime();
-  if (!el || isNaN(end)) return;
+  const el = document.getElementById('countdown');
   const tick = () => {
-    const ms = end - Date.now();
-    if (ms <= 0) { el.hidden = true; return; }
-    const d = Math.floor(ms / 864e5), hr = Math.floor(ms % 864e5 / 36e5), mn = Math.floor(ms % 36e5 / 6e4);
-    el.hidden = false;
-    el.textContent = `Harga pendiri berakhir dalam ${d > 0 ? d + ' hari ' : ''}${hr} jam ${mn} menit`;
+    if (Date.now() >= DEADLINE) { computeWave(); fillWave(); DEADLINE = new Date(CONFIG.deadlineISO).getTime(); }
+    const t = countdownText();
+    if (el) { el.hidden = !t; if (t) el.textContent = `Pendaftaran Gelombang ${CONFIG.wave} ditutup dalam ${t}`; }
+    document.querySelectorAll('[data-countdown]').forEach(x => { x.hidden = !t; x.textContent = t ? `Pendaftaran ditutup dalam ${t}` : ''; });
   };
-  tick(); setInterval(tick, 30000);
+  tick(); setInterval(tick, 1000);
 })();
 
 /* ---------- tombol bawah di HP ---------- */
