@@ -532,12 +532,30 @@ const VALUE = [
 ];
 const AGE_GROUP = { a1: "1–2 tahun", a2: "1–2 tahun", a3: "2–4 tahun", a4: "2–4 tahun" };
 
+/* ---------- Sumber kunjungan (UTM) ----------
+   Disimpan di perangkat pengunjung, lalu ikut ke pesan WhatsApp "(ref: ...)" dan ke event Pixel. */
+const SRC = (() => {
+  const q = new URLSearchParams(location.search); let cur = {};
+  ['source','medium','campaign','content','term'].forEach(k => { const v = q.get('utm_' + k); if (v) cur[k] = v.slice(0, 60); });
+  if (!cur.source && document.referrer) { try { const h = new URL(document.referrer).hostname.replace(/^www\./, '');
+    if (!h.endsWith('celotehku.com')) cur = { source: /facebook|fb\.com/.test(h) ? 'fb' : /instagram/.test(h) ? 'ig' : /google\./.test(h) ? 'google' : /whatsapp/.test(h) ? 'wa' : /tiktok/.test(h) ? 'tiktok' : h, medium: 'referral' };
+  } catch(e){} }
+  if (!cur.source && q.get('fbclid')) cur = { source: 'fb', medium: 'referral' };
+  if (cur.source) { cur.landed = new Date().toISOString();
+    try { localStorage.setItem('cel_src', JSON.stringify(cur)); if (!localStorage.getItem('cel_src_first')) localStorage.setItem('cel_src_first', JSON.stringify(cur)); } catch(e){}
+    return cur; }
+  try { const saved = JSON.parse(localStorage.getItem('cel_src') || '{}'); if (saved.source) return saved; } catch(e){}
+  return { source: 'direct' };
+})();
+const SRC_CODE = [SRC.source, SRC.medium, SRC.content].filter(Boolean).join('-');
+const SRC_PARAMS = { utm_source: SRC.source, utm_medium: SRC.medium || '', utm_campaign: SRC.campaign || '', utm_content: SRC.content || '' };
+
 /* ---------- Meta Pixel ---------- */
 if (CONFIG.pixelId) {
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', CONFIG.pixelId); fbq('track', 'PageView');
 }
-function track(ev, data){ try{ if (window.fbq) fbq('track', ev, data||{}); }catch(e){} console.log('[track]', ev, data||''); }
+function track(ev, data){ const d = Object.assign({}, data||{}, SRC_PARAMS); try{ if (window.fbq) fbq('track', ev, d); }catch(e){} console.log('[track]', ev, d); }
 /* Purchase manual: buka celotehku.com/?paid=299000 setelah pembayaran diterima */
 (() => { const q = new URLSearchParams(location.search), v = parseInt(q.get('paid'), 10);
   if (v > 0) { track('Purchase', { value: v, currency: 'IDR' }); q.delete('paid');
@@ -566,7 +584,7 @@ document.getElementById('valueList').innerHTML = VALUE.map(v => `<li><span><b>${
 document.querySelectorAll('[data-guarantee]').forEach(el => el.textContent = CONFIG.guaranteeDays);
 document.querySelectorAll('[data-brand]').forEach(el => el.textContent = CONFIG.brand);
 document.getElementById('privacyLink').href = CONFIG.privacyUrl;
-const waUrl = (text) => `https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(text)}`;
+const waUrl = (text) => `https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(text + `\n\n(ref: ${SRC_CODE})`)}`;
 document.querySelectorAll('[data-wa-link]').forEach(a => { a.href = waUrl(`Halo ${CONFIG.brand}, saya mau bertanya.`); a.target = "_blank"; a.rel = "noopener"; });
 if (CONFIG.expertName) {
   document.getElementById('expert').hidden = false;
@@ -639,8 +657,10 @@ document.getElementById('heroAges').innerHTML = AGES.map(a => `<button class="ag
 document.querySelectorAll('#heroAges .age-btn').forEach(b => b.addEventListener('click', () => openQuiz(b.dataset.age)));
 function closeQuiz(){ quiz.classList.remove('open'); document.body.style.overflow = ''; }
 document.querySelectorAll('[data-open-quiz]').forEach(b => b.addEventListener('click', () => openQuiz()));
-/* Dari iklan (utm_source) atau ?quiz=1: kuis langsung terbuka layar penuh */
-setTimeout(() => { const q = new URLSearchParams(location.search); if (q.has('utm_source') || q.get('quiz') === '1') openQuiz(); }, 0);
+/* Dari iklan, postingan, partner (utm_medium) atau ?quiz=1: kuis langsung terbuka layar penuh.
+   Link profil (utm_medium=profile) dan kunjungan biasa membuka halaman utama dulu. */
+setTimeout(() => { const q = new URLSearchParams(location.search);
+  if (q.get('quiz') === '1' || ['paid','post','partner','story'].includes(q.get('utm_medium'))) openQuiz(); }, 0);
 document.getElementById('qClose').addEventListener('click', closeQuiz);
 document.getElementById('qBack').addEventListener('click', () => { if (S.step > 0 && S.step < TOTAL) { S.step--; render(); } else closeQuiz(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (pay.classList.contains('open')) closePay(); else closeQuiz(); } });
@@ -663,7 +683,7 @@ function single(title, hint, opts, current, onPick){
 function render(){
   setBar();
   const st = S.step;
-  try { if (window.fbq && st >= 1 && st <= 6) fbq('trackCustom', 'QuizStep', { step: st }); } catch(e){}
+  try { if (window.fbq && st >= 1 && st <= 6) fbq('trackCustom', 'QuizStep', Object.assign({ step: st }, SRC_PARAMS)); } catch(e){}
   if (st === 0) {
     single("Berapa usia si Kecil?", "Pertanyaan berikutnya disesuaikan dengan usianya.", AGES.map(a => ({...a, v: a.id})), S.age, o => S.age = o.id);
     box.insertAdjacentHTML('afterbegin', `<div class="q-intro"><b>Cek perkembangan bicara si Kecil</b><span>Gratis · 5 pertanyaan · 2 menit · hasil langsung muncul</span></div>`);
@@ -741,7 +761,7 @@ function sendLead(){
     time: new Date().toISOString(), ...S.contact,
     age: AGES.find(a => a.id === S.age)?.label, answers: S.ms, flags: S.flags.map(i => FLAGS[i]),
     score: S.result.pct, category: S.result.cat, page: location.href,
-    utm: Object.fromEntries(new URLSearchParams(location.search))
+    utm: SRC_PARAMS, ref: SRC_CODE
   };
   console.log('[lead]', payload);
   if (!CONFIG.leadWebhook) return;

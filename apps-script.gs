@@ -9,7 +9,7 @@
  * 4. Salin URL Web app (berakhiran /exec) dan tempel ke CONFIG.leadWebhook di index.html.
  */
 const HEADERS = ['Waktu', 'Nama orang tua', 'Nama anak', 'WhatsApp', 'Usia', 'Skor %', 'Kategori',
-                 'Tanda bahaya', 'Jawaban', 'utm_source', 'utm_campaign', 'utm_content', 'Halaman'];
+                 'Tanda bahaya', 'Jawaban', 'Sumber (ref)', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'Halaman'];
 
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -19,7 +19,7 @@ function doPost(e) {
   sheet.appendRow([
     new Date(), d.parent || '', d.child || '', "'" + (d.wa || ''), d.age || '',
     d.score, d.category || '', (d.flags || []).join('; '), (d.answers || []).join(','),
-    utm.utm_source || '', utm.utm_campaign || '', utm.utm_content || '', d.page || ''
+    d.ref || '', utm.utm_source || '', utm.utm_medium || '', utm.utm_campaign || '', utm.utm_content || '', d.page || ''
   ]);
   return ContentService.createTextOutput('ok');
 }
