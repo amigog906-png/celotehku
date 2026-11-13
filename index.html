@@ -290,6 +290,47 @@ body.has-sticky{padding-bottom:84px}
 @media(max-width:859px){.words{min-height:0;padding:4px 4px 0;gap:8px}.bubble.b3{font-size:2.3rem}.bubble.b4{font-size:2.6rem}}
 @media(max-width:899px){.plans.plans-3 .plan:first-child{order:1}}
 @media (prefers-reduced-motion:reduce){.bubble,.words-cap{opacity:1;transform:none}}
+.quiz.is-entry .quiz-top{display:none}
+.entry{max-width:520px;margin:0 auto}
+@media(min-width:760px){.entry{max-width:760px}.age-cards{grid-template-columns:repeat(4,1fr)}}
+.entry-brand{display:flex;align-items:center;gap:8px;font:800 1.15rem var(--display);margin-bottom:16px}
+.entry h1{font-size:clamp(1.5rem,6.2vw,2.1rem);line-height:1.15;margin:0 0 8px}
+.entry-sub{color:var(--ink-soft);margin:0 0 18px}
+.entry-q{font-weight:800;margin:0 0 10px}
+.age-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.age-card{display:flex;flex-direction:column;padding:0;border:2px solid var(--line);border-radius:18px;background:#fff;overflow:hidden;cursor:pointer;font:inherit;color:var(--ink);text-align:left}
+.age-card svg{display:block;width:100%;height:auto}
+.age-card span{padding:10px 12px;font-size:.9rem}
+.age-card b{display:block;font:800 1.05rem var(--display)}
+.age-card small{display:block;color:var(--ink-soft);font-size:.8rem}
+@media(hover:hover){.age-card:hover{border-color:var(--teal)}}
+.age-card:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.entry-trust{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem;color:var(--ink-soft)}
+.entry-trust li::before{content:"✓ ";color:var(--teal);font-weight:800}
+.entry-foot{margin-top:16px;font-size:.78rem;color:var(--ink-soft);line-height:1.6}
+.entry-foot a{color:var(--ink-soft)}
+.qfact{max-width:520px;margin:0 auto}
+.qfact-big{font:800 clamp(2.4rem,11vw,3.4rem)/1 var(--display);color:var(--teal);margin:14px 0 12px}
+.qfact-you{background:var(--mango-soft);border-radius:var(--r-sm);padding:12px 14px}
+.qfact-src{font-size:.78rem;color:var(--ink-soft)}
+.loading{max-width:460px;margin:6vh auto 0}
+.ld-list{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.ld-list li{color:var(--ink-soft);padding-left:32px;position:relative;transition:color .3s}
+.ld-list li::before{content:"";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);box-sizing:border-box;transition:background .3s}
+.ld-list li.done{color:var(--ink);font-weight:700}
+.ld-list li.done::before{background:var(--teal);border-color:var(--teal)}
+.ld-list li.done::after{content:"✓";position:absolute;left:5px;top:-1px;color:#fff;font-weight:800;font-size:.85rem}
+.loading .meter i{transition:width .8s ease}
+.plan-card{border:2px solid var(--teal);border-radius:var(--r-md);padding:14px 14px 10px;margin:16px 0;background:#fff}
+.plan-h{font:800 1.1rem var(--display)}
+.plan-card .sum{margin-top:8px}
+.plan-card .sum div{background:var(--sky)}
+.gift{background:var(--mango-soft);border:2px dashed var(--mango);border-radius:var(--r-md);padding:16px 16px 14px;margin:18px 0}
+.gift-tag{font:800 .85rem var(--body);color:var(--ink);margin-bottom:4px}
+.gift h3{margin:0 0 6px}
+.gift .tips{margin-bottom:14px}
+.gift-alt{background:#fff;border:2px dashed var(--mango);border-radius:var(--r-md);padding:14px 16px;margin:18px 0 0;text-align:center}
+.gift-alt i{font-style:normal}
 </style>
 </head>
 <body>
@@ -307,7 +348,7 @@ body.has-sticky{padding-bottom:84px}
     <div class="wrap hero-grid">
       <div>
         <h1>Bantu si Kecil mulai bicara, 10 menit sehari bareng Bunda</h1>
-        <p class="lead">Cek tumbuh kembangnya gratis, 7 pertanyaan, 2 menit. Hasil dan ide latihan langsung muncul.</p>
+        <p class="lead">Cek tumbuh kembangnya gratis, 12 pertanyaan singkat, 2–3 menit. Hasil dan ide latihan langsung muncul.</p>
         <div class="age-start">
           <div class="age-q">Mulai di sini: berapa usia si Kecil?</div>
           <div class="age-grid" id="heroAges"></div>
@@ -538,6 +579,7 @@ const CONFIG = {
   startAfterCloseDays: 4,
   wave: 1, startDate: "", priceUntil: "", deadlineISO: "",
   guaranteeDays: 14,
+  gift: false,                       // hadiah 3 hari: false = tes permintaan murni; ?gift=1 / ?gift=0 di URL menimpa ini
   cohortSize: 100,
   expertName: "",                    // kosong = bagian ahli disembunyikan
   expertTitle: "",
@@ -727,17 +769,141 @@ const AGE_TIP = {
   a4: "Beri pertanyaan pilihan, bukan ya/tidak: “Mau apel atau pisang?” Ini mendorong si Kecil menjawab dengan kata."
 };
 
+const SCREEN = [
+  { v: 0, label: "Hampir tidak pernah" },
+  { v: 1, label: "Kurang dari 1 jam" },
+  { v: 2, label: "1–2 jam" },
+  { v: 3, label: "Lebih dari 2 jam" }
+];
+const CARER = [
+  { v: 0, label: "Bunda" },
+  { v: 1, label: "Ayah dan Bunda bergantian" },
+  { v: 2, label: "Nenek atau Kakek" },
+  { v: 3, label: "Pengasuh/ART atau daycare" }
+];
+const TIMEDAY = [
+  { v: 5,  label: "Sekitar 5 menit" },
+  { v: 10, label: "Sekitar 10 menit" },
+  { v: 20, label: "15–20 menit" },
+  { v: 0,  label: "Belum tentu, tergantung hari" }
+];
+const COMMIT = [
+  { v: "today",    label: "Ya, mulai hari ini" },
+  { v: "tomorrow", label: "Ya, mulai besok" },
+  { v: "later",    label: "Saya ingin lihat hasilnya dulu" }
+];
+/* Topik dari iklan: ?p=bicara|makan|emosi (atau utm_campaign berisi makan/gtm/emosi/tantrum/gadget). Tanpa topik: alur umum (bicara + pertanyaan kekhawatiran). */
+const TOPIC = (() => { const q = new URLSearchParams(location.search), t = (q.get('p') || '').toLowerCase(), c = (q.get('utm_campaign') || '').toLowerCase();
+  if (['bicara','makan','emosi'].includes(t)) return t;
+  if (/makan|gtm|mpasi/.test(c)) return 'makan';
+  if (/emosi|tantrum|gadget/.test(c)) return 'emosi';
+  return 'bicara'; })();
+const GIFT = (() => { const g = new URLSearchParams(location.search).get('gift'); return g === '1' ? true : g === '0' ? false : !!CONFIG.gift; })();
+const TOPIC_TAG = (() => { const q = new URLSearchParams(location.search); return (q.get('p') || /makan|gtm|mpasi|emosi|tantrum|gadget/.test((q.get('utm_campaign') || '').toLowerCase())) ? TOPIC : 'umum'; })();
+const MK_WHERE = [
+  { v: 0, label: "Duduk di kursi makan, tanpa layar" },
+  { v: 1, label: "Sambil nonton HP atau TV" },
+  { v: 2, label: "Sambil jalan-jalan atau digendong" },
+  { v: 3, label: "Disuapi sambil dibujuk lama" }
+];
+const MK_DUR = [
+  { v: 0, label: "Kurang dari 30 menit" },
+  { v: 1, label: "30–60 menit" },
+  { v: 2, label: "Lebih dari 1 jam" }
+];
+const MK_SNACK = [
+  { v: 0, label: "Jarang" },
+  { v: 1, label: "Kadang-kadang" },
+  { v: 2, label: "Sering, hampir sepanjang hari" }
+];
+const MK_FLAGS = [
+  "Berat badan tidak naik, atau malah turun, dalam 2–3 bulan terakhir",
+  "Sering tersedak, muntah, atau kesulitan menelan saat makan",
+  "Di atas 1 tahun, hanya mau makanan yang dihaluskan",
+  "Tampak lemas atau sering sakit"
+];
+const EM_FREQ = [
+  { v: 0, label: "Jarang, kurang dari sekali seminggu" },
+  { v: 1, label: "Beberapa kali seminggu" },
+  { v: 2, label: "Hampir setiap hari" },
+  { v: 3, label: "Beberapa kali sehari" }
+];
+const EM_DUR = [
+  { v: 0, label: "Kurang dari 5 menit" },
+  { v: 1, label: "5–15 menit" },
+  { v: 2, label: "Lebih dari 15 menit" }
+];
+const EM_TRIG = [
+  { v: 0, label: "Saat HP atau TV diambil" },
+  { v: 1, label: "Saat keinginannya ditolak" },
+  { v: 2, label: "Saat lelah, lapar, atau mengantuk" },
+  { v: 3, label: "Tidak tentu" }
+];
+const EM_WHEN = [
+  { v: 0, label: "Jarang diberi HP atau TV" },
+  { v: 1, label: "Saat makan" },
+  { v: 2, label: "Supaya tenang saat menangis atau tantrum" },
+  { v: 3, label: "Saat Bunda sibuk atau bekerja" }
+];
+const EM_FLAGS = [
+  "Sering melukai diri sendiri atau orang lain saat tantrum",
+  "Tantrum makin sering dan makin parah dari bulan ke bulan",
+  "Jarang menoleh saat dipanggil, padahal pendengarannya baik",
+  "Kemampuan yang dulu sudah bisa, sekarang hilang"
+];
+const FLAGLIST = { bicara: FLAGS, makan: MK_FLAGS, emosi: EM_FLAGS }[TOPIC];
+const FLAGTITLE = { bicara: "Apakah Bunda melihat hal berikut pada bicara si Kecil?", makan: "Apakah Bunda melihat hal berikut pada si Kecil?", emosi: "Apakah Bunda melihat hal berikut pada si Kecil?" }[TOPIC];
+const lbl = (arr, v) => (arr.find(x => x.v === v) || {}).label || '';
+const FLOWS = {
+  bicara: ['age','ms0','ms1','ms2','fact1','screen','fact2','carer','makan','concern','flags','time','commit','form','loading','result'],
+  makan:  ['age','makan','mk_where','mk_dur','mk_snack','factM','flags','screen','carer','ms0','time','commit','form','loading','result'],
+  emosi:  ['age','em_freq','em_dur','em_trig','screen','em_when','factE','flags','ms0','carer','time','commit','form','loading','result']
+};
+const STEPS = FLOWS[TOPIC];
+const QSTEPS = STEPS.filter(k => !/^(fact.*|loading|result)$/.test(k));
+
+/* ilustrasi usia: anak makin besar, kata makin panjang */
+function kidSVG(o){
+  return `<svg viewBox="0 0 120 112" role="img" aria-hidden="true">
+    <rect width="120" height="112" fill="${o.bg}"/>
+    <circle cx="96" cy="96" r="30" fill="#fff" opacity=".35"/>
+    <g transform="translate(46 108) scale(${o.s}) translate(-46 -108)">
+      <rect x="35" y="88" width="9" height="20" rx="4" fill="#1F2A44"/><rect x="48" y="88" width="9" height="20" rx="4" fill="#1F2A44"/>
+      <rect x="27" y="58" width="38" height="36" rx="14" fill="${o.shirt}"/>
+      <rect x="18" y="62" width="10" height="24" rx="5" fill="${o.shirt}" transform="rotate(14 23 62)"/>
+      <rect x="64" y="62" width="10" height="24" rx="5" fill="${o.shirt}" transform="rotate(-14 69 62)"/>
+      <circle cx="46" cy="38" r="21" fill="#E7B48A"/>
+      <path d="${o.hair}" fill="#2B2118"/>
+      <circle cx="39" cy="40" r="2.4" fill="#1F2A44"/><circle cx="53" cy="40" r="2.4" fill="#1F2A44"/>
+      <circle cx="34" cy="46" r="3.4" fill="#F28B82" opacity=".45"/><circle cx="58" cy="46" r="3.4" fill="#F28B82" opacity=".45"/>
+      <path d="M40 ${TOPIC === 'emosi' ? 50 : 48} Q46 ${TOPIC === 'emosi' ? 44 : o.mouth} 52 ${TOPIC === 'emosi' ? 50 : 48}" stroke="#1F2A44" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </g>
+    <g><rect x="${o.bx}" y="8" width="${118 - o.bx}" height="26" rx="13" fill="#fff" stroke="#FFB21E" stroke-width="2.5"/>
+      <path d="M${o.bx + 10} 32 l-6 9 l13 -9z" fill="#fff" stroke="#FFB21E" stroke-width="2.5" stroke-linejoin="round"/>
+      <rect x="${o.bx + 4}" y="29" width="16" height="4" fill="#fff"/>
+      <text x="${(o.bx + 118) / 2}" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#1F2A44" font-family="Nunito, system-ui, sans-serif">${o.word}</text></g>
+  </svg>`;
+}
+const WORDS = { bicara: ["ba-ba", "bola!", "mau susu", "itu apa?"], makan: ["nyam!", "mau!", "enak!", "nambah"], emosi: ["huaa!", "nggak!", "mau HP!", "aku kesal"] }[TOPIC];
+const KID = {
+  a1: kidSVG({ s: .7,  bg: "#FFF1C2", shirt: "#FFB21E", word: WORDS[0],    bx: 66, mouth: 53, hair: "M40 20 q6 -8 12 0 q-6 -3 -12 0z" }),
+  a2: kidSVG({ s: .8,  bg: "#DDF1EE", shirt: "#0F8C7E", word: WORDS[1],    bx: 66, mouth: 54, hair: "M27 34 q2 -18 19 -18 q17 0 19 18 q-8 -9 -19 -9 q-11 0 -19 9z" }),
+  a3: kidSVG({ s: .9,  bg: "#FFF1C2", shirt: "#F28B82", word: WORDS[2], bx: 48, mouth: 55, hair: "M25 38 q-1 -24 21 -24 q22 0 21 24 q-4 -12 -21 -13 q-17 1 -21 13z" }),
+  a4: kidSVG({ s: 1,   bg: "#DDF1EE", shirt: "#0F8C7E", word: WORDS[3], bx: 50, mouth: 55, hair: "M24 40 q-2 -27 22 -27 q24 0 22 27 l-4 -10 q-6 -7 -18 -8 q-12 1 -18 8z" })
+};
+
 /* ---------- state ---------- */
-let S = { step: 0, age: null, ms: [], flags: [], makan: null, concern: null };
+let S = {};
 const box = document.getElementById('qBox');
 const quiz = document.getElementById('quiz');
-const TOTAL = 8; // usia + 3 milestone + makan + kekhawatiran + tanda + kontak
+const TOTAL = STEPS.length - 1;
 
 function openQuiz(age){
-  S = { step: 0, age: null, ms: [], flags: [], makan: null, concern: null };
+  S = { step: 0, age: null, ms: [], flags: [], makan: null, concern: TOPIC === 'bicara' ? null : TOPIC, screen: null, carer: null, time: null, commit: null,
+        mk_where: null, mk_dur: null, mk_snack: null, em_freq: null, em_dur: null, em_trig: null, em_when: null };
   if (age) { S.age = age; S.step = 1; }
   quiz.classList.add('open'); document.body.style.overflow = 'hidden';
-  render(); track('ViewContent', { content_name: 'quiz_start' });
+  render(); track('ViewContent', { content_name: 'quiz_start', content_category: TOPIC });
 }
 const AGE_SHORT = { a1: ["12–17", "bulan"], a2: ["18–23", "bulan"], a3: ["2 tahun", "24–35 bulan"], a4: ["3–4 tahun", "36–48 bulan"] };
 document.getElementById('heroAges').innerHTML = AGES.map(a => `<button class="age-btn" data-age="${a.id}">${AGE_SHORT[a.id][0]}<small>${AGE_SHORT[a.id][1]}</small></button>`).join('');
@@ -746,17 +912,19 @@ function closeQuiz(){ quiz.classList.remove('open'); document.body.style.overflo
 document.querySelectorAll('[data-open-quiz]').forEach(b => b.addEventListener('click', () => openQuiz()));
 /* Dari iklan, postingan, partner (utm_medium) atau ?quiz=1: kuis langsung terbuka layar penuh.
    Link profil (utm_medium=profile) dan kunjungan biasa membuka halaman utama dulu. */
+/* Kuis adalah halaman pertama untuk semua pengunjung. Halaman info: ?info=1, link #anchor, atau tombol "Tentang program". */
 setTimeout(() => { const q = new URLSearchParams(location.search);
-  if (q.get('quiz') === '1' || ['paid','post','partner','story'].includes(q.get('utm_medium'))) openQuiz(); }, 0);
+  if (q.get('info') !== '1' && !location.hash) openQuiz(); }, 0);
 document.getElementById('qClose').addEventListener('click', closeQuiz);
-document.getElementById('qBack').addEventListener('click', () => { if (S.step > 0 && S.step < TOTAL) { S.step--; render(); } else closeQuiz(); });
+document.getElementById('qBack').addEventListener('click', () => { const k = STEPS[S.step]; if (S.step > 0 && k !== 'loading' && k !== 'result') { S.step--; render(); } else if (S.step === 0) closeQuiz(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (pay.classList.contains('open')) closePay(); else closeQuiz(); } });
 
 function setBar(){ document.getElementById('qBar').style.width = Math.min(100, (S.step / TOTAL) * 100) + '%'; }
+const qNum = () => { const i = QSTEPS.indexOf(STEPS[S.step]); return i >= 0 ? `Pertanyaan ${i + 1} dari ${QSTEPS.length}` : ''; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function single(title, hint, opts, current, onPick){
-  box.innerHTML = `<div class="count">Pertanyaan ${S.step + 1} dari ${TOTAL - 1}</div>
+  box.innerHTML = `<div class="count">${qNum()}</div>
     <h2>${title}</h2>${hint ? `<p class="hint">${hint}</p>` : ''}
     <div class="opts">${opts.map((o,i) => `<button class="opt" data-i="${i}" aria-pressed="${current != null && (current === o.v || current === o.id)}"><span class="dot"></span>${esc(o.label)}</button>`).join('')}</div>`;
   box.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
@@ -770,29 +938,112 @@ function single(title, hint, opts, current, onPick){
 function render(){
   setBar();
   try { box.closest('.quiz-body').scrollTop = 0; } catch(e){}
-  const st = S.step;
-  try { if (window.fbq && st >= 1 && st <= 8) fbq('trackCustom', 'QuizStep', Object.assign({ step: st }, SRC_PARAMS)); } catch(e){}
-  if (st === 0) {
-    single("Berapa usia si Kecil?", "Pertanyaan berikutnya disesuaikan dengan usianya.", AGES.map(a => ({...a, v: a.id})), S.age, o => S.age = o.id);
-    box.insertAdjacentHTML('afterbegin', `<div class="q-intro"><b>Cek tumbuh kembang si Kecil</b><span>Gratis · 7 pertanyaan · 2 menit · hasil langsung muncul</span></div>`);
-    requestAnimationFrame(() => { const f = document.activeElement; if (f && f.classList && f.classList.contains('opt')) f.blur(); });
-    return;
+  const st = S.step, k = STEPS[st];
+  quiz.classList.toggle('is-entry', k === 'age');
+  try { if (window.fbq && st >= 1 && k !== 'loading') fbq('trackCustom', 'QuizStep', Object.assign({ step: st, step_name: k }, SRC_PARAMS)); } catch(e){}
+  if (k === 'age') return renderEntry();
+  if (/^ms\d$/.test(k)) {
+    const i = +k[2], q = MILESTONES[S.age][i];
+    return single(`Apakah si Kecil sudah… ${esc(q.charAt(0).toLowerCase() + q.slice(1))}?`, TOPIC === 'bicara' ? "" : "Satu pertanyaan singkat tentang bicara.", ANSWERS, S.ms[i], o => S.ms[i] = o.v);
   }
-  if (st >= 1 && st <= 3) {
-    const i = st - 1, q = MILESTONES[S.age][i];
-    return single(`Apakah si Kecil sudah… ${esc(q.charAt(0).toLowerCase() + q.slice(1))}?`, "", ANSWERS, S.ms[i], o => S.ms[i] = o.v);
+  if (k === 'fact1') return renderFact({
+    big: "5–8 dari 100", title: "Bunda tidak sendirian",
+    body: `<p>Sekitar 5–8 dari 100 anak usia prasekolah mengalami keterlambatan bicara. Kabar baiknya: anak belajar bicara dari obrolan sehari-hari dengan orang terdekatnya, dan itu bisa dilatih di rumah, sedikit demi sedikit setiap hari.</p>`,
+    src: "Sumber: Ikatan Dokter Anak Indonesia (IDAI)" });
+  if (k === 'screen') return single("Berapa lama si Kecil melihat HP atau TV dalam sehari?", "Perkiraan saja, tidak perlu tepat.", SCREEN, S.screen, o => S.screen = o.v);
+  if (k === 'fact2') {
+    const under2 = S.age === 'a1' || S.age === 'a2';
+    const you = S.screen >= 2
+      ? `<p class="qfact-you">Saat ini si Kecil melihat layar <b>${esc(lbl(SCREEN, S.screen).toLowerCase())}</b> sehari. Di Celotehku, layar hanya dipakai 1 menit untuk contoh, lalu HP ditutup dan diganti main bareng.</p>`
+      : `<p class="qfact-you">Bagus, waktu layar si Kecil sudah terbatas. Di Celotehku, layar hanya dipakai 1 menit untuk contoh, lalu main bareng tanpa layar.</p>`;
+    return renderFact({
+      big: under2 ? "Tanpa layar" : "Maks. 1 jam", title: under2 ? "Saran WHO untuk usia 1 tahun" : "Saran WHO untuk usia 2–4 tahun",
+      body: `<p>${under2 ? 'Untuk anak usia 1 tahun, WHO tidak menyarankan waktu layar pasif seperti menonton TV atau video. Untuk usia 2 tahun ke atas, paling lama 1 jam sehari.' : 'Untuk anak usia 2–4 tahun, WHO menyarankan waktu layar paling lama 1 jam sehari. Makin sedikit, makin baik.'} Waktu terbaik adalah main, membaca, dan bercerita bersama orang tua.</p>${you}`,
+      src: "Sumber: WHO, pedoman aktivitas fisik, waktu layar, dan tidur anak di bawah 5 tahun (2019)" });
   }
-  if (st === 4) return single("Bagaimana kebiasaan makan si Kecil akhir-akhir ini?", "", MAKAN, S.makan, o => S.makan = o.v);
-  if (st === 5) return single("Apa yang paling membuat Bunda khawatir saat ini?", "Kami sesuaikan saran dan program dengan jawaban Bunda.", CONCERNS.map(c => ({...c, v: c.id})), S.concern, o => S.concern = o.id);
-  if (st === 6) return renderFlags();
-  if (st === 7) return renderForm();
-  if (st === 8) return renderResult();
+  if (k === 'mk_where') return single("Biasanya si Kecil makan dengan cara seperti apa?", "", MK_WHERE, S.mk_where, o => S.mk_where = o.v);
+  if (k === 'mk_dur') return single("Berapa lama satu kali makan biasanya?", "", MK_DUR, S.mk_dur, o => S.mk_dur = o.v);
+  if (k === 'mk_snack') return single("Seberapa sering si Kecil ngemil atau minum susu di luar jam makan?", "", MK_SNACK, S.mk_snack, o => S.mk_snack = o.v);
+  if (k === 'factM') {
+    const issues = [];
+    if (S.mk_dur >= 1) issues.push('satu kali makan ' + lbl(MK_DUR, S.mk_dur).toLowerCase());
+    if (S.mk_where === 1 || S.mk_where === 2) issues.push('makan ' + lbl(MK_WHERE, S.mk_where).toLowerCase());
+    if (S.mk_snack === 2) issues.push('sering ngemil di luar jam makan');
+    const you = issues.length
+      ? `<p class="qfact-you">Saat ini: ${esc(issues.join(', '))}. Program Makan Tanpa Drama membantu menerapkan aturan ini sedikit demi sedikit, tanpa paksaan.</p>`
+      : `<p class="qfact-you">Banyak kebiasaan si Kecil sudah sesuai. Program Makan Tanpa Drama membantu merapikan sisanya, sedikit demi sedikit.</p>`;
+    return renderFact({ big: "Maks. 30 menit", title: "Aturan makan anak (feeding rules)",
+      body: `<p>Dokter anak di Indonesia menganjurkan aturan makan berikut: jadwal makan dan camilan yang teratur, satu kali makan paling lama 30 menit, makan tanpa layar dan mainan, dan di luar jadwal hanya air putih. Aturan ini membantu si Kecil mengenali rasa lapar dan kenyang.</p>${you}`,
+      src: "Sumber: feeding rules (Bonnin) yang dianjurkan Ikatan Dokter Anak Indonesia (IDAI)" });
+  }
+  if (k === 'em_freq') return single("Seberapa sering si Kecil tantrum?", "Tantrum: menangis keras, menjerit, berguling, atau memukul saat kesal.", EM_FREQ, S.em_freq, o => S.em_freq = o.v);
+  if (k === 'em_dur') return single("Biasanya berapa lama tantrumnya?", "", EM_DUR, S.em_dur, o => S.em_dur = o.v);
+  if (k === 'em_trig') return single("Kapan tantrum paling sering muncul?", "", EM_TRIG, S.em_trig, o => S.em_trig = o.v);
+  if (k === 'em_when') return single("Kapan biasanya si Kecil diberi HP atau TV?", "Pilih yang paling sering.", EM_WHEN, S.em_when, o => S.em_when = o.v);
+  if (k === 'factE') {
+    const you = S.em_when === 2
+      ? `<p class="qfact-you">HP memang cepat menenangkan. Tapi jika menjadi satu-satunya cara, si Kecil tidak belajar menenangkan diri. Program Tantrum &amp; Gadget mengajarkan cara lain, bertahap.</p>`
+      : S.screen >= 2 ? `<p class="qfact-you">Saat ini si Kecil melihat layar <b>${esc(lbl(SCREEN, S.screen).toLowerCase())}</b> sehari. Program Tantrum &amp; Gadget membantu menguranginya bertahap, tanpa drama.</p>`
+      : `<p class="qfact-you">Program Tantrum &amp; Gadget membantu Bunda menghadapi tantrum dengan tenang dan melatih si Kecil menyebut perasaannya.</p>`;
+    return renderFact({ big: "1–3 tahun", title: "Tantrum adalah bagian normal tumbuh kembang",
+      body: `<p>Tantrum paling sering muncul di usia 1–3 tahun, saat si Kecil punya keinginan besar tapi belum punya cukup kata untuk menyampaikannya. Biasanya tantrum berkurang ketika kemampuan bicaranya berkembang. Karena itu, melatih si Kecil mengungkapkan perasaan dengan kata membantu.</p>${you}`,
+      src: "Sumber: KidsHealth (Nemours); panduan dokter anak tentang tantrum" });
+  }
+  if (k === 'carer') return single("Siapa yang paling sering menemani si Kecil di siang hari?", "Program kami sesuaikan agar mudah dijalankan siapa pun yang menemani.", CARER, S.carer, o => S.carer = o.v);
+  if (k === 'makan') return single("Bagaimana kebiasaan makan si Kecil akhir-akhir ini?", "", MAKAN, S.makan, o => S.makan = o.v);
+  if (k === 'concern') return single("Apa yang paling membuat Bunda khawatir saat ini?", "Kami sesuaikan saran dan program dengan jawaban Bunda.", CONCERNS.map(c => ({...c, v: c.id})), S.concern, o => S.concern = o.id);
+  if (k === 'flags') return renderFlags();
+  if (k === 'time') return single("Berapa lama Bunda bisa main bareng si Kecil setiap hari?", "Tidak apa-apa jika sedikit. Programnya kami sesuaikan.", TIMEDAY, S.time, o => S.time = o.v);
+  if (k === 'commit') return single("Siap mulai main bareng setiap hari bersama si Kecil?", "Latihan singkat yang rutin lebih mudah dijalankan daripada latihan lama yang jarang.", COMMIT, S.commit, o => S.commit = o.v);
+  if (k === 'form') return renderForm();
+  if (k === 'loading') return renderLoading();
+  if (k === 'result') return renderResult();
+}
+
+function renderEntry(){
+  box.innerHTML = `<div class="entry">
+    <div class="entry-brand"><span class="logo-bubble" aria-hidden="true"></span> Celotehku</div>
+    <h1>${({ bicara: 'Cek tumbuh kembang si Kecil dan dapatkan program 10 menit sehari', makan: 'Cek kebiasaan makan si Kecil dan dapatkan rencana makan tanpa drama', emosi: 'Cek tantrum dan waktu layar si Kecil, lalu dapatkan rencana yang cocok' })[TOPIC]}</h1>
+    <p class="entry-sub">Gratis · 2–3 menit · hasil dan rencana langsung muncul${GIFT ? '<br><b>🎁 Bonus: 3 hari latihan gratis</b>' : ''}</p>
+    <div class="entry-q">Mulai dari usia si Kecil:</div>
+    <div class="age-cards">${AGES.map(a => `<button class="age-card" data-age="${a.id}" aria-label="${esc(a.label)}">${KID[a.id]}<span><b>${AGE_CARD[a.id][0]} →</b><small>${AGE_CARD[a.id][1]}</small></span></button>`).join('')}</div>
+    <ul class="entry-trust"><li>Untuk usia 1–4 tahun</li><li>Garansi uang kembali ${CONFIG.guaranteeDays} hari</li><li>Dikelola CV Mega Oasis Persada</li></ul>
+    <p class="entry-foot"><a href="#" id="toInfo">Tentang program</a> · <a href="${CONFIG.privacyUrl}" target="_blank" rel="noopener">Kebijakan Privasi</a> · <a href="syarat.html" target="_blank" rel="noopener">Syarat &amp; Ketentuan</a><br>Cek ini adalah skrining awal, bukan diagnosis medis.</p>
+  </div>`;
+  box.querySelectorAll('.age-card').forEach(b => b.addEventListener('click', () => { S.age = b.dataset.age; S.step++; render(); }));
+  document.getElementById('toInfo').addEventListener('click', e => { e.preventDefault(); closeQuiz(); window.scrollTo(0, 0); });
+}
+
+function renderFact(o){
+  box.innerHTML = `<div class="qfact"><div class="qfact-big">${o.big}</div><h2>${o.title}</h2>${o.body}<p class="qfact-src">${o.src}</p>
+    <div class="q-actions"><button class="btn btn-main btn-block" id="factNext">Lanjut</button></div></div>`;
+  document.getElementById('factNext').addEventListener('click', () => { S.step++; render(); });
+}
+
+const AGE_CARD = { a1: ['12–17 bulan', 'sekitar 1 tahun'], a2: ['18–23 bulan', 'sekitar 1,5 tahun'], a3: ['2 tahun', '24–35 bulan'], a4: ['3–4 tahun', '36–48 bulan'] };
+const ageLbl = () => (AGES.find(a => a.id === S.age) || {}).label || '';
+const timeTxt = () => S.time === 5 ? '5 menit' : S.time === 20 ? '15–20 menit' : '10 menit';
+function renderLoading(){
+  const name = esc((S.contact && S.contact.child) || 'si Kecil');
+  const items = [`Mencocokkan jawaban dengan ${({ bicara: 'tahap bicara', makan: 'aturan makan', emosi: 'tahap emosi' })[TOPIC]} anak usia ${ageLbl()}`,
+    ({ bicara: 'Menyesuaikan dengan waktu layar dan kebiasaan makan', makan: 'Menyesuaikan dengan cara dan waktu makan si Kecil', emosi: 'Menyesuaikan dengan pemicu tantrum dan waktu layar' })[TOPIC],
+    `Memilih permainan untuk ${timeTxt()} sehari`, 'Menyiapkan grup Bunda seusia'];
+  box.innerHTML = `<div class="loading"><h2>Menyusun program untuk ${name}…</h2><div class="meter"><i id="ldFill"></i></div>
+    <ul class="ld-list">${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+  const lis = box.querySelectorAll('.ld-list li'), fill = document.getElementById('ldFill');
+  let i = 0;
+  const tick = () => {
+    if (STEPS[S.step] !== 'loading') return;
+    if (i < lis.length) { lis[i].classList.add('done'); i++; fill.style.width = (i / lis.length * 100) + '%'; setTimeout(tick, 1000); }
+    else setTimeout(() => { if (STEPS[S.step] === 'loading') { S.step++; render(); } }, 500);
+  };
+  setTimeout(tick, 700);
 }
 
 function renderFlags(){
-  box.innerHTML = `<div class="count">Pertanyaan ${S.step + 1} dari ${TOTAL - 1}</div>
-    <h2>Apakah Bunda melihat hal berikut pada bicara si Kecil?</h2><p class="hint">Centang semua yang sesuai.</p>
-    <div class="opts">${FLAGS.map((f,i) => `<button class="opt check" data-i="${i}" aria-pressed="${S.flags.includes(i)}"><span class="dot"></span>${esc(f)}</button>`).join('')}
+  box.innerHTML = `<div class="count">${qNum()}</div>
+    <h2>${FLAGTITLE}</h2><p class="hint">Centang semua yang sesuai.</p>
+    <div class="opts">${FLAGLIST.map((f,i) => `<button class="opt check" data-i="${i}" aria-pressed="${S.flags.includes(i)}"><span class="dot"></span>${esc(f)}</button>`).join('')}
     <button class="opt check" data-none aria-pressed="${S.flags.length === 0 && S._flagsSeen ? 'true' : 'false'}"><span class="dot"></span>Tidak ada yang sesuai</button></div>
     <div class="q-actions"><button class="btn btn-main btn-block" id="flagNext">Lanjut</button></div>`;
   box.querySelectorAll('.opt[data-i]').forEach(b => b.addEventListener('click', () => {
@@ -809,15 +1060,15 @@ function renderFlags(){
 
 function renderForm(){
   const saved = (() => { try { return JSON.parse(localStorage.getItem('bb_contact') || '{}'); } catch(e){ return {}; } })();
-  box.innerHTML = `<div class="count">Langkah terakhir</div>
-    <h2>Hasil cek sudah siap</h2><p class="hint">Isi data berikut, hasil langsung muncul. Setelah itu Bunda bisa minta 3 hari latihan gratis lewat WhatsApp.</p>
+  box.innerHTML = `<div class="count">${qNum()}</div>
+    ${GIFT ? '<h2>Hasil dan hadiah untuk si Kecil sudah siap</h2><p class="hint">Hasil dan rencana langsung muncul di layar. 🎁 Hadiah 3 hari latihan gratis: hari pertama langsung bisa dibuka, hari ke-2 dan ke-3 kami kirim lewat WhatsApp.</p>' : '<h2>Hasil untuk si Kecil sudah siap</h2><p class="hint">Hasil dan rencana langsung muncul di layar, plus ide latihan untuk hari ini.</p>'}
     <form id="leadForm" novalidate>
       <div class="field"><label for="fParent">Nama Bunda/Ayah</label><input id="fParent" autocomplete="given-name" required value="${esc(saved.parent || '')}"></div>
       <div class="field"><label for="fChild">Nama panggilan si Kecil (opsional)</label><input id="fChild" value="${esc(saved.child || '')}"></div>
       <div class="field"><label for="fWa">Nomor WhatsApp</label><input id="fWa" type="tel" inputmode="numeric" autocomplete="tel" placeholder="08xxxxxxxxxx" required value="${esc(saved.wa || '')}"></div>
       <label class="consent"><input type="checkbox" id="fOk"> <span>Saya orang tua/wali si Kecil. Saya setuju dihubungi lewat WhatsApp, dan data saya serta data si Kecil diproses sesuai <a href="${CONFIG.privacyUrl}" target="_blank" rel="noopener">Kebijakan Privasi</a>.</span></label>
       <div class="err" id="fErr" role="alert"></div>
-      <button class="btn btn-main btn-block" type="submit">Lihat hasil</button>
+      <button class="btn btn-main btn-block" type="submit">${GIFT ? 'Lihat hasil dan hadiah 🎁' : 'Lihat hasil'}</button>
     </form>`;
   fOk.addEventListener('change', () => { if (fOk.checked) document.getElementById('fErr').textContent = ''; });
   document.getElementById('leadForm').addEventListener('submit', e => {
@@ -834,12 +1085,24 @@ function renderForm(){
     try { localStorage.setItem('bb_contact', JSON.stringify(S.contact)); } catch(e){}
     S.result = scoreIt();
     sendLead();
-    track('Lead', { content_name: 'quiz', content_category: S.result.primary });
+    track('Lead', { content_name: 'quiz', content_category: S.result.primary, gift: GIFT ? 1 : 0 });
     S.step++; render();
   });
 }
 
 function scoreIt(){
+  if (TOPIC !== 'bicara') {
+    const speechWeak = S.ms[0] != null && S.ms[0] < 2;
+    let cat;
+    if (TOPIC === 'makan') {
+      cat = S.flags.length ? 'flag'
+        : (S.makan === 0 && !S.mk_dur && !S.mk_where) ? 'ok'
+        : (S.makan >= 2 && (S.mk_dur >= 1 || S.mk_where >= 1)) || S.makan === 3 ? 'low' : 'mid';
+      return { pct: null, cat, primary: 'makan', bump: speechWeak ? 'bicara' : 'emosi' };
+    }
+    cat = S.flags.length ? 'flag' : S.em_freq === 0 ? 'ok' : (S.em_freq >= 2 && (S.em_dur >= 2 || S.screen >= 2)) ? 'low' : 'mid';
+    return { pct: null, cat, primary: 'emosi', bump: speechWeak ? 'bicara' : 'makan' };
+  }
   const sum = S.ms.reduce((a,b) => a + (b || 0), 0);
   const pct = Math.round(sum / 6 * 100);
   let cat = pct >= 80 ? 'ok' : pct >= 50 ? 'mid' : 'low';
@@ -858,7 +1121,12 @@ function scoreIt(){
 function sendLead(){
   const payload = {
     time: new Date().toISOString(), ...S.contact,
-    age: AGES.find(a => a.id === S.age)?.label, answers: S.ms, flags: S.flags.map(i => FLAGS[i]),
+    age: AGES.find(a => a.id === S.age)?.label,
+    answers: ['topik: ' + TOPIC_TAG, 'hadiah: ' + (GIFT ? 'ya' : 'tidak'), 'bicara: ' + S.ms.filter(x => x != null).join('/'),
+      ...(TOPIC === 'makan' ? ['cara makan: ' + lbl(MK_WHERE, S.mk_where), 'durasi makan: ' + lbl(MK_DUR, S.mk_dur), 'ngemil: ' + lbl(MK_SNACK, S.mk_snack)]
+        : TOPIC === 'emosi' ? ['tantrum: ' + lbl(EM_FREQ, S.em_freq), 'durasi: ' + lbl(EM_DUR, S.em_dur), 'pemicu: ' + lbl(EM_TRIG, S.em_trig), 'HP diberi: ' + lbl(EM_WHEN, S.em_when)] : []),
+      'layar: ' + lbl(SCREEN, S.screen), 'pendamping: ' + lbl(CARER, S.carer), 'waktu: ' + lbl(TIMEDAY, S.time), 'komitmen: ' + lbl(COMMIT, S.commit)],
+    flags: S.flags.map(i => FLAGLIST[i]),
     score: S.result.pct, category: S.result.cat, page: location.href,
     makan: (MAKAN.find(m => m.v === S.makan) || {}).label || '', concern: (CONCERNS.find(c => c.id === S.concern) || {}).label || '', product: S.result.primary,
     utm: SRC_PARAMS, ref: SRC_CODE
@@ -875,8 +1143,23 @@ const RESULT_TEXT = {
   flag: { t: "Ada tanda yang sebaiknya diperiksa dokter", d: "Tanda yang Bunda centang sebaiknya diperiksakan ke dokter anak, termasuk pemeriksaan pendengaran. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian." }
 };
 
+const RESULT_TEXTS = {
+  bicara: RESULT_TEXT,
+  makan: {
+    ok:   { t: "Kebiasaan makan si Kecil sudah cukup baik", d: "Pertahankan jadwal makan yang teratur dan suasana makan yang tenang. Program kami membantu menambah variasi menu dan menjaga kebiasaan baik ini." },
+    mid:  { t: "Ada kebiasaan makan yang bisa dirapikan", d: "Pilih-pilih makanan dan waktu makan yang panjang cukup umum di usia ini. Aturan makan yang konsisten, tanpa paksaan, membantu si Kecil mengenali rasa lapar dan kenyang." },
+    low:  { t: "Waktu makan sedang jadi drama", d: "GTM dan waktu makan yang panjang membuat Bunda lelah, dan Bunda tidak sendirian. Jadwal yang teratur, makan paling lama 30 menit, dan tanpa layar adalah langkah pertama. Jika berat badannya tidak naik, periksakan ke dokter anak." },
+    flag: { t: "Ada tanda yang sebaiknya diperiksa dokter", d: "Tanda yang Bunda centang sebaiknya diperiksakan ke dokter anak atau Puskesmas, termasuk pengukuran berat dan tinggi badan. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian." }
+  },
+  emosi: {
+    ok:   { t: "Tantrum si Kecil masih dalam batas wajar", d: "Tantrum sesekali normal di usia 1–3 tahun. Program kami membantu menjaga waktu layar tetap terbatas dan melatih si Kecil menyebut perasaannya." },
+    mid:  { t: "Tantrum dan waktu layar perlu sedikit diatur", d: "Tantrum yang muncul beberapa kali seminggu cukup umum. Rutinitas yang jelas, aba-aba sebelum layar dimatikan, dan cara menenangkan tanpa HP biasanya membantu." },
+    low:  { t: "Tantrum sering muncul dan melelahkan Bunda", d: "Bunda tidak sendirian. Tantrum paling sering terjadi di usia 1–3 tahun. Rutinitas, cara menenangkan tanpa HP, dan melatih si Kecil menyebut perasaannya membantu tantrum berkurang perlahan." },
+    flag: { t: "Ada tanda yang sebaiknya dikonsultasikan", d: "Tanda yang Bunda centang sebaiknya dikonsultasikan ke dokter anak atau psikolog anak. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian." }
+  }
+};
 function renderResult(){
-  const { pct, cat, primary, bump } = S.result, R = RESULT_TEXT[cat];
+  const { pct, cat, primary, bump } = S.result, R = RESULT_TEXTS[TOPIC][cat];
   const P = PRODUCTS[primary];
   const name = S.contact.child || 'si Kecil';
   const Name = esc(name.charAt(0).toUpperCase() + name.slice(1));
@@ -893,18 +1176,32 @@ function renderResult(){
     <div class="result-head ${cat}">
       <div class="count">Hasil cek ${esc(name)}</div>
       <h2 style="margin-bottom:.3em">${R.t}</h2>
-      <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
-      <div class="small"><b>${pct}%</b> tahap bicara sesuai usia sudah muncul</div>
+      ${pct != null ? `<div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      <div class="small"><b>${pct}%</b> tahap bicara sesuai usia sudah muncul</div>`
+      : `<div class="small">${TOPIC === 'makan' ? 'Kebiasaan makan: <b>' + esc(lbl(MAKAN, S.makan)) + '</b>' : 'Tantrum: <b>' + esc(lbl(EM_FREQ, S.em_freq).toLowerCase()) + '</b>, ' + esc(lbl(EM_DUR, S.em_dur).toLowerCase())}</div>`}
     </div>
     <p>${R.d}</p>
-    ${cat === 'flag' ? `<div class="flag-box"><b>Yang Bunda centang:</b><ul style="margin:8px 0 0;padding-left:20px">${S.flags.map(i => `<li>${esc(FLAGS[i])}</li>`).join('')}</ul></div>` : ''}
-    <div class="sum">
-      <div><span>Kebiasaan makan</span><b>${esc(makanLbl)}</b></div>
-      <div><span>Kekhawatiran utama Bunda</span><b>${esc((CONCERNS.find(c => c.id === S.concern) || {}).label || '-')}</b></div>
+    ${cat === 'flag' ? `<div class="flag-box"><b>Yang Bunda centang:</b><ul style="margin:8px 0 0;padding-left:20px">${S.flags.map(i => `<li>${esc(FLAGLIST[i])}</li>`).join('')}</ul></div>` : ''}
+    <div class="plan-card">
+      <div class="plan-h">Rencana untuk ${Name}</div>
+      <div class="sum">
+        <div><span>Fokus utama</span><b>${esc(P.title)}</b></div>
+        <div><span>Usia</span><b>${esc(ageLbl())}</b></div>
+        <div><span>Main bareng</span><b>${S.time === 5 ? '5 menit sehari, cukup untuk mulai' : S.time === 0 ? '10 menit, boleh dibagi 2 × 5 menit' : S.time === 20 ? '10–20 menit sehari' : '10 menit sehari'}</b></div>
+        <div><span>Waktu layar</span><b>${S.screen >= 2 ? 'Dikurangi bertahap, diganti main bareng' : 'Tetap terbatas, layar hanya 1 menit contoh'}</b></div>
+        <div><span>Yang menemani</span><b>${S.carer === 2 ? 'Bunda, bisa juga Nenek/Kakek' : S.carer === 3 ? 'Bunda, bisa juga pengasuh' : esc(lbl(CARER, S.carer) || 'Bunda')}</b></div>
+        ${S.makan != null ? `<div><span>Kebiasaan makan</span><b>${esc(makanLbl)}</b></div>` : ''}
+        ${TOPIC === 'emosi' ? `<div><span>Tantrum</span><b>${esc(lbl(EM_FREQ, S.em_freq))}</b></div>` : ''}
+        <div><span>Mulai</span><b><span data-start>${CONFIG.startDate}</span></b></div>
+      </div>
     </div>
-    ${S.makan === 3 ? '<div class="flag-box">Berat badan yang susah naik, atau sering tersedak dan muntah saat makan, sebaiknya diperiksakan ke dokter anak atau Puskesmas. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian.</div>' : ''}
-    <h3>3 hal yang bisa dicoba mulai hari ini</h3>
-    <ul class="tips">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
+    ${S.makan === 3 && cat !== 'flag' ? '<div class="flag-box">Berat badan yang susah naik, atau sering tersedak dan muntah saat makan, sebaiknya diperiksakan ke dokter anak atau Puskesmas. Ini bukan diagnosis, hanya saran agar Bunda mendapat kepastian.</div>' : ''}
+    <div class="gift">
+      <div class="gift-tag">${GIFT ? `🎁 Hadiah untuk ${Name} · Hari 1 dari 3` : `Untuk ${Name}`}</div>
+      <h3>Latihan hari ini, langsung bisa dicoba</h3>
+      <ul class="tips">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
+      ${GIFT ? '<p class="small muted" style="margin:0">Hari ke-2 dan ke-3 juga gratis: ambil lewat WhatsApp di bagian bawah, setelah pilihan paket.</p>' : '<p class="small muted" style="margin:0">Di Kelas, latihan seperti ini datang setiap hari, sesuai usia si Kecil.</p>'}
+    </div>
     <div class="invite">
       <div class="inv-tag">Undangan · Gelombang <span data-wave>${CONFIG.wave}</span></div>
       <h3>${Name} cocok untuk ${esc(P.name)}, grup usia ${AGE_GROUP[S.age]}</h3>
@@ -927,10 +1224,15 @@ function renderResult(){
     <button class="btn btn-main btn-block" id="joinBtn" style="margin-top:16px"></button>
     <div class="cd-line" data-countdown></div>
     <p class="small muted" style="text-align:center;margin:10px 0 0">Transfer BNI a.n. CV Mega Oasis Persada. Garansi ${CONFIG.guaranteeDays} hari uang kembali. <a href="syarat.html" target="_blank" rel="noopener">Syarat &amp; Ketentuan</a></p>
-    <p class="small" style="text-align:center;margin:14px 0 0"><a href="#" id="askWa">Ada pertanyaan? Chat WhatsApp</a> · <a href="#" id="freeWa" target="_blank" rel="noopener">Belum yakin? Coba 3 hari gratis</a></p>
+    ${GIFT ? `<div class="gift-alt">
+      <b>Belum siap gabung sekarang?</b>
+      <p class="small" style="margin:2px 0 10px">Ambil dulu hadiah latihan hari ke-2 dan ke-3, gratis lewat WhatsApp. Pendaftaran gelombang ini tetap tutup <i data-until>${CONFIG.priceUntil}</i>.</p>
+      <a class="btn btn-ghost btn-block" id="giftWa" href="#" target="_blank" rel="noopener">🎁 Kirim hari ke-2 dan ke-3 ke WhatsApp saya</a>
+    </div>` : ''}
+    <p class="small" style="text-align:center;margin:14px 0 0"><a href="#" id="askWa">Ada pertanyaan? Chat WhatsApp</a></p>
     <p class="small muted" style="margin-top:14px">Program Celotehku adalah latihan pendamping di rumah, bukan pengganti pemeriksaan dokter atau terapi.</p>
   `;
-  requestAnimationFrame(() => { const m = document.getElementById('meterFill'); if (m) m.style.width = pct + '%'; });
+  requestAnimationFrame(() => { const m = document.getElementById('meterFill'); if (m && pct != null) m.style.width = pct + '%'; });
   const joinBtn = document.getElementById('joinBtn');
   const upd = () => { joinBtn.textContent = `Gabung Gelombang ${CONFIG.wave} · Bayar ${rp(orderTotal(order))}`; };
   upd(); onWaveChange = upd;
@@ -945,10 +1247,10 @@ function renderResult(){
   document.getElementById('toJoin').addEventListener('click', () => document.querySelector('.pp-group').scrollIntoView({ behavior: 'smooth', block: 'center' }));
   document.getElementById('askWa').addEventListener('click', e => { e.preventDefault(); track('Contact', { content_name: 'result_question', content_category: primary }); window.open(waUrl(`Halo ${CONFIG.brand}, saya ${S.contact.parent}. Saya mau tanya dulu tentang ${P.name} Gelombang ${CONFIG.wave} untuk ${name}.`), '_blank', 'noopener'); });
   const ageLabel = AGES.find(a => a.id === S.age).label;
-  const msg = `Halo ${CONFIG.brand}, saya ${S.contact.parent}. Saya mau 3 hari latihan gratis (${P.title}) untuk ${name}, usia ${ageLabel}. Hasil cek bicara: ${R.t} (${pct}%).`;
-  const fw = document.getElementById('freeWa');
-  fw.href = waUrl(msg);
-  fw.addEventListener('click', () => track('Contact', { content_name: 'free_3_days', content_category: primary }));
+  const msg = `Halo ${CONFIG.brand}, saya ${S.contact.parent}. Saya mau hadiah latihan hari ke-2 dan ke-3 (${P.title}) untuk ${name}, usia ${ageLabel}. Hasil cek: ${R.t}${pct != null ? ` (${pct}%)` : ''}.`;
+  const gw = document.getElementById('giftWa');
+  if (gw) gw.href = waUrl(msg);
+  if (gw) gw.addEventListener('click', () => track('Contact', { content_name: 'gift_day2_3', content_category: primary }));
 }
 
 /* ---------- pesan via WhatsApp ---------- */
