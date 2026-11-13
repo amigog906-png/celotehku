@@ -10,6 +10,7 @@
 <meta property="og:image" content="https://celotehku.com/og.jpg">
 <meta property="og:url" content="https://celotehku.com/">
 <meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect x=%221%22 y=%225%22 width=%2230%22 height=%2222%22 rx=%2211%22 fill=%22%23FFB21E%22/%3E%3Crect x=%229%22 y=%2214%22 width=%2214%22 height=%225%22 rx=%222.5%22 fill=%22%231F2A44%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -257,7 +258,7 @@ body.has-sticky{padding-bottom:84px}
 .q .hint{color:var(--ink-soft);margin-top:-6px}
 .opts{display:grid;gap:12px;margin-top:20px}
 .opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--white);border:2px solid var(--line);border-radius:var(--r-md);padding:16px 18px;font:700 1.05rem/1.35 var(--body);color:var(--ink);cursor:pointer;transition:border-color .15s, background .15s}
-.opt:hover{border-color:var(--ink-soft)}
+@media(hover:hover){.opt:hover{border-color:var(--ink-soft)}}
 .opt[aria-pressed="true"]{border-color:var(--teal);background:#E6F4F2}
 .opt .dot{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--line);background:#fff}
 .opt[aria-pressed="true"] .dot{border-color:var(--teal);background:var(--teal);box-shadow:inset 0 0 0 4px #fff}
@@ -286,6 +287,9 @@ body.has-sticky{padding-bottom:84px}
 .cd-line[hidden]{display:none}
 .inv-meta i{font-style:normal}
 .consent input{width:22px;height:22px;flex:none;accent-color:#0F8C7E}
+@media(max-width:859px){.words{min-height:0;padding:4px 4px 0;gap:8px}.bubble.b3{font-size:2.3rem}.bubble.b4{font-size:2.6rem}}
+@media(max-width:899px){.plans.plans-3 .plan:first-child{order:1}}
+@media (prefers-reduced-motion:reduce){.bubble,.words-cap{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -454,9 +458,9 @@ body.has-sticky{padding-bottom:84px}
       <details><summary>Untuk usia berapa?</summary><p>Anak usia 1 sampai 4 tahun. Latihan disesuaikan dengan hasil cek dan usia si Kecil.</p></details>
       <details><summary>Berapa lama latihannya setiap hari?</summary><p>Sekitar 10 menit: 1 menit menonton video contoh bersama, lalu main bareng tanpa layar.</p></details>
       <details><summary>Kapan hasilnya terlihat?</summary><p>Setiap anak berbeda. Kemajuan biasanya terlihat setelah beberapa minggu latihan rutin. Kami tidak menjanjikan hasil dalam waktu tertentu.</p></details>
-      <details><summary>Bagaimana cara bayar?</summary><p>Pilih durasi, lalu transfer ke rekening BNI 1918709520 a.n. CV Mega Oasis Persada. Kirim bukti transfer lewat tombol WhatsApp yang muncul. Kami konfirmasi, kirim kuitansi, dan tautan grup kelas.</p></details>
+      <details><summary>Bagaimana cara bayar?</summary><p>Pilih paket, lalu transfer ke rekening BNI 1918709520 a.n. CV Mega Oasis Persada. Kirim bukti transfer lewat tombol WhatsApp yang muncul. Kami konfirmasi, kirim kuitansi, dan tautan grup kelas.</p></details>
       <details><summary>Apa isi grup WhatsApp?</summary><p>Grup Bunda yang anaknya seusia, dipandu tim Celotehku. Di sana Bunda bisa setor latihan, bertanya, dan berbagi cerita. Program harian tetap dikirim setiap pagi.</p></details>
-      <details><summary>Siapa yang memandu sesi live?</summary><p>Terapis wicara mitra Celotehku. Jadwal sesi diumumkan di grup, dan rekamannya bisa ditonton ulang jika Bunda berhalangan.</p></details>
+      <details><summary>Siapa yang memandu sesi live?</summary><p>Tim Celotehku. Jadwal sesi diumumkan di grup, dan rekamannya bisa ditonton ulang jika Bunda berhalangan.</p></details>
       <details><summary>Kapan kelas dimulai?</summary><p>Gelombang <span data-wave>1</span> dimulai <span data-start>19 November 2026</span>. Pendaftaran ditutup <span data-until>14 November 2026</span> atau saat kuota penuh. Jika kelas batal dimulai, uang Bunda kami kembalikan 100%.</p></details>
       <details><summary>Bagaimana jika tidak cocok?</summary><p>Kirim pesan ke kami dalam <span data-guarantee>14</span> hari pertama dan uang Bunda kembali 100%.</p></details>
       <details><summary>Apakah data saya aman?</summary><p>Kami hanya menyimpan nama, nomor WhatsApp, dan jawaban cek untuk mengirim hasil dan program. Kami tidak menjual data. Video atau voice note yang Bunda kirim ke grup hanya dibagikan di grup tersebut.</p></details>
@@ -611,6 +615,7 @@ const SRC_PARAMS = { utm_source: SRC.source, utm_medium: SRC.medium || '', utm_c
 /* ---------- Meta Pixel ---------- */
 if (CONFIG.pixelId) {
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('set', 'autoConfig', false, CONFIG.pixelId);  // jangan kirim teks tombol/jawaban kuis ke Meta
   fbq('init', CONFIG.pixelId); fbq('track', 'PageView');
 }
 function track(ev, data){ const d = Object.assign({}, data||{}, SRC_PARAMS); try{ if (window.fbq) fbq('track', ev, d); }catch(e){} console.log('[track]', ev, d); }
@@ -764,6 +769,7 @@ function single(title, hint, opts, current, onPick){
 
 function render(){
   setBar();
+  try { box.closest('.quiz-body').scrollTop = 0; } catch(e){}
   const st = S.step;
   try { if (window.fbq && st >= 1 && st <= 8) fbq('trackCustom', 'QuizStep', Object.assign({ step: st }, SRC_PARAMS)); } catch(e){}
   if (st === 0) {
@@ -813,6 +819,7 @@ function renderForm(){
       <div class="err" id="fErr" role="alert"></div>
       <button class="btn btn-main btn-block" type="submit">Lihat hasil</button>
     </form>`;
+  fOk.addEventListener('change', () => { if (fOk.checked) document.getElementById('fErr').textContent = ''; });
   document.getElementById('leadForm').addEventListener('submit', e => {
     e.preventDefault();
     const parent = fParent.value.trim(), child = fChild.value.trim();
@@ -914,7 +921,7 @@ function renderResult(){
     <h3>Pilih paket</h3>
     <p class="small muted" style="margin:-4px 0 10px">Semua paket ikut Gelombang <span data-wave>${CONFIG.wave}</span>, mulai <span data-start>${CONFIG.startDate}</span>.</p>
     <div class="pp-group" role="radiogroup" aria-label="Paket">
-      ${Object.entries(TIERS).map(([k, t]) => `<button type="button" class="pp${k === 'kelas' ? ' sel' : ''}" role="radio" aria-checked="${k === 'kelas'}" data-k="${k}"><span class="pp-dot"></span><span class="pp-main"><b>${t.label}</b>${t.rec ? '<em>Rekomendasi</em>' : ''}${t.slots ? `<span class="pp-tag">Kuota ${t.slots} Bunda</span>` : ''}<p>${k === 'mini' ? esc(P.miniName) + ' (PDF) + kartu permainan sesuai usia. Tanpa grup.' : t.sub}</p></span><span class="pp-price">${rp(t.price)}</span></button>`).join('')}
+      ${(primary === 'emosi' ? ['kelas','mini'] : ['kelas','premium','mini']).map(k => [k, TIERS[k]]).map(([k, t]) => `<button type="button" class="pp${k === 'kelas' ? ' sel' : ''}" role="radio" aria-checked="${k === 'kelas'}" data-k="${k}"><span class="pp-dot"></span><span class="pp-main"><b>${t.label}</b>${t.rec ? '<em>Rekomendasi</em>' : ''}${t.slots ? `<span class="pp-tag">Kuota ${t.slots} Bunda</span>` : ''}<p>${k === 'mini' ? esc(P.miniName) + ' (PDF) + kartu permainan sesuai usia. Tanpa grup.' : t.sub}</p></span><span class="pp-price">${rp(t.price)}</span></button>`).join('')}
     </div>
     ${bump ? `<label class="bump"><input type="checkbox" id="bumpChk"><span><b>Tambah ${esc(PRODUCTS[bump].miniName)} · +${rp(BUMP_PRICE)}</b>Panduan PDF 7 hari dan kartu permainan, dikirim bersama paket utama.</span></label>` : ''}
     <button class="btn btn-main btn-block" id="joinBtn" style="margin-top:16px"></button>
