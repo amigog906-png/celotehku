@@ -285,6 +285,8 @@ body.has-sticky{padding-bottom:84px}
 
 .cd-line{margin:10px auto 0;text-align:center;font-weight:800;font-size:.9rem;color:#b42318;font-variant-numeric:tabular-nums}
 .cd-line[hidden]{display:none}
+.no-mini .tier-mini{display:none!important}
+.calm [data-countdown]{display:none!important}
 .inv-meta i{font-style:normal}
 .consent input{width:22px;height:22px;flex:none;accent-color:#0F8C7E}
 @media(max-width:859px){.words{min-height:0;padding:4px 4px 0;gap:8px}.bubble.b3{font-size:2.3rem}.bubble.b4{font-size:2.6rem}}
@@ -425,7 +427,7 @@ body.has-sticky{padding-bottom:84px}
       <h2>Cara kerjanya</h2>
       <ol class="steps">
         <li><h3>Cek gratis 2 menit</h3><p class="muted">Jawab pertanyaan singkat sesuai usia si Kecil dan lihat hasilnya langsung.</p></li>
-        <li><h3>Gabung Gelombang <span data-wave>1</span></h3><p class="muted">Pilih paket Mini, Kelas, atau Premium. Bunda masuk grup WhatsApp sesuai usia si Kecil, kelas mulai bersama pada <span data-start>19 November 2026</span>.</p></li>
+        <li><h3>Gabung Gelombang <span data-wave>1</span></h3><p class="muted">Pilih paket yang cocok. Bunda masuk grup WhatsApp sesuai usia si Kecil, kelas mulai bersama pada <span data-start>19 November 2026</span>.</p></li>
         <li><h3>Main bareng setiap hari</h3><p class="muted">Setiap pagi: video 1 menit dan kartu permainan. Sore: setor latihan di grup. Setiap 2 minggu: cek ulang kemajuan. Setiap bulan: sesi live tanya jawab.</p></li>
       </ol>
     </div>
@@ -446,7 +448,7 @@ body.has-sticky{padding-bottom:84px}
       <div class="countdown" id="countdown" hidden></div>
       <p class="muted">Kelas mulai <b data-start>19 November 2026</b> dan dijalankan bersama dalam grup Bunda sesuai usia si Kecil. Kuota <b data-cohort>100</b> Bunda, pendaftaran ditutup <b data-until>14 November 2026</b> atau saat kuota penuh. Jika kelas batal dimulai, uang Bunda kami kembalikan 100%.</p>
       <div class="plans plans-3">
-        <div class="plan">
+        <div class="plan tier-mini">
           <h3>Mini</h3>
           <div class="price">Rp49rb</div>
           <div class="per">Panduan mandiri</div>
@@ -579,6 +581,7 @@ const CONFIG = {
   startAfterCloseDays: 4,
   wave: 1, startDate: "", priceUntil: "", deadlineISO: "",
   guaranteeDays: 14,
+  mini: false,                       // paket Mini Rp49rb: false = disembunyikan (tes harga Rp199rb); ?mini=1 di URL menampilkan lagi
   gift: false,                       // hadiah 3 hari: false = tes permintaan murni; ?gift=1 / ?gift=0 di URL menimpa ini
   cohortSize: 100,
   expertName: "",                    // kosong = bagian ahli disembunyikan
@@ -798,6 +801,8 @@ const TOPIC = (() => { const q = new URLSearchParams(location.search), t = (q.ge
   if (/makan|gtm|mpasi/.test(c)) return 'makan';
   if (/emosi|tantrum|gadget/.test(c)) return 'emosi';
   return 'bicara'; })();
+const MINI = (() => { const g = new URLSearchParams(location.search).get('mini'); return g === '1' ? true : g === '0' ? false : !!CONFIG.mini; })();
+if (!MINI) document.documentElement.classList.add('no-mini');
 const GIFT = (() => { const g = new URLSearchParams(location.search).get('gift'); return g === '1' ? true : g === '0' ? false : !!CONFIG.gift; })();
 const TOPIC_TAG = (() => { const q = new URLSearchParams(location.search); return (q.get('p') || /makan|gtm|mpasi|emosi|tantrum|gadget/.test((q.get('utm_campaign') || '').toLowerCase())) ? TOPIC : 'umum'; })();
 const MK_WHERE = [
@@ -1003,7 +1008,7 @@ function render(){
 function renderEntry(){
   box.innerHTML = `<div class="entry">
     <div class="entry-brand"><span class="logo-bubble" aria-hidden="true"></span> Celotehku</div>
-    <h1>${({ bicara: 'Cek tumbuh kembang si Kecil dan dapatkan program 10 menit sehari', makan: 'Cek kebiasaan makan si Kecil dan dapatkan rencana makan tanpa drama', emosi: 'Cek tantrum dan waktu layar si Kecil, lalu dapatkan rencana yang cocok' })[TOPIC]}</h1>
+    <h1>${({ bicara: 'Cek tahap bicara si Kecil dan dapatkan program 10 menit sehari', makan: 'Cek kebiasaan makan si Kecil dan dapatkan rencana makan tanpa drama', emosi: 'Cek tantrum dan waktu layar si Kecil, lalu dapatkan rencana yang cocok' })[TOPIC]}</h1>
     <p class="entry-sub">Gratis · 2–3 menit · hasil dan rencana langsung muncul${GIFT ? '<br><b>🎁 Bonus: 3 hari latihan gratis</b>' : ''}</p>
     <div class="entry-q">Mulai dari usia si Kecil:</div>
     <div class="age-cards">${AGES.map(a => `<button class="age-card" data-age="${a.id}" aria-label="${esc(a.label)}">${KID[a.id]}<span><b>${AGE_CARD[a.id][0]} →</b><small>${AGE_CARD[a.id][1]}</small></span></button>`).join('')}</div>
@@ -1172,11 +1177,12 @@ function renderResult(){
   const value = VALUES[primary] || VALUE;
   const order = { product: primary, tier: 'kelas', bump: null };
 
+  document.body.classList.toggle('calm', cat === 'flag');
   box.innerHTML = `
     <div class="result-head ${cat}">
       <div class="count">Hasil cek ${esc(name)}</div>
       <h2 style="margin-bottom:.3em">${R.t}</h2>
-      ${pct != null ? `<div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      ${cat === 'flag' ? `<div class="small">Sambil menunggu pemeriksaan, Bunda tetap bisa menemani si Kecil berlatih di rumah.</div>` : pct != null ? `<div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
       <div class="small"><b>${pct}%</b> tahap bicara sesuai usia sudah muncul</div>`
       : `<div class="small">${TOPIC === 'makan' ? 'Kebiasaan makan: <b>' + esc(lbl(MAKAN, S.makan)) + '</b>' : 'Tantrum: <b>' + esc(lbl(EM_FREQ, S.em_freq).toLowerCase()) + '</b>, ' + esc(lbl(EM_DUR, S.em_dur).toLowerCase())}</div>`}
     </div>
@@ -1204,10 +1210,10 @@ function renderResult(){
     </div>
     <div class="invite">
       <div class="inv-tag">Undangan · Gelombang <span data-wave>${CONFIG.wave}</span></div>
-      <h3>${Name} cocok untuk ${esc(P.name)}, grup usia ${AGE_GROUP[S.age]}</h3>
+      <h3>${cat === 'flag' ? `Sambil menunggu pemeriksaan, ${esc(P.name)} bisa menjadi latihan pendamping di rumah` : `${Name} cocok untuk ${esc(P.name)}, grup usia ${AGE_GROUP[S.age]}`}</h3>
       <div class="inv-meta"><span>Mulai <i data-start>${CONFIG.startDate}</i></span><span>Kuota ${CONFIG.cohortSize} Bunda</span><span>Pendaftaran tutup <i data-until>${CONFIG.priceUntil}</i></span></div>
       <div class="inv-timer" data-countdown>${countdownText() ? 'Pendaftaran ditutup dalam ' + countdownText() : ''}</div>
-      <button type="button" class="inv-go" id="toJoin">Lihat paket dan gabung · mulai Rp49rb ↓</button>
+      <button type="button" class="inv-go" id="toJoin">${MINI ? 'Lihat paket dan gabung · mulai Rp49rb ↓' : 'Lihat paket dan gabung ↓'}</button>
     </div>
     <h3>Yang Bunda dapatkan di Kelas</h3>
     <ul class="value">${value.map(v => `<li><b>${v[0]}</b><span>${v[1]}</span></li>`).join('')}</ul>
@@ -1218,7 +1224,7 @@ function renderResult(){
     <h3>Pilih paket</h3>
     <p class="small muted" style="margin:-4px 0 10px">Semua paket ikut Gelombang <span data-wave>${CONFIG.wave}</span>, mulai <span data-start>${CONFIG.startDate}</span>.</p>
     <div class="pp-group" role="radiogroup" aria-label="Paket">
-      ${(primary === 'emosi' ? ['kelas','mini'] : ['kelas','premium','mini']).map(k => [k, TIERS[k]]).map(([k, t]) => `<button type="button" class="pp${k === 'kelas' ? ' sel' : ''}" role="radio" aria-checked="${k === 'kelas'}" data-k="${k}"><span class="pp-dot"></span><span class="pp-main"><b>${t.label}</b>${t.rec ? '<em>Rekomendasi</em>' : ''}${t.slots ? `<span class="pp-tag">Kuota ${t.slots} Bunda</span>` : ''}<p>${k === 'mini' ? esc(P.miniName) + ' (PDF) + kartu permainan sesuai usia. Tanpa grup.' : t.sub}</p></span><span class="pp-price">${rp(t.price)}</span></button>`).join('')}
+      ${(primary === 'emosi' ? ['kelas','mini'] : ['kelas','premium','mini']).filter(k => MINI || k !== 'mini').map(k => [k, TIERS[k]]).map(([k, t]) => `<button type="button" class="pp${k === 'kelas' ? ' sel' : ''}" role="radio" aria-checked="${k === 'kelas'}" data-k="${k}"><span class="pp-dot"></span><span class="pp-main"><b>${t.label}</b>${t.rec ? '<em>Rekomendasi</em>' : ''}${t.slots ? `<span class="pp-tag">Kuota ${t.slots} Bunda</span>` : ''}<p>${k === 'mini' ? esc(P.miniName) + ' (PDF) + kartu permainan sesuai usia. Tanpa grup.' : t.sub}</p></span><span class="pp-price">${rp(t.price)}</span></button>`).join('')}
     </div>
     ${bump ? `<label class="bump"><input type="checkbox" id="bumpChk"><span><b>Tambah ${esc(PRODUCTS[bump].miniName)} · +${rp(BUMP_PRICE)}</b>Panduan PDF 7 hari dan kartu permainan, dikirim bersama paket utama.</span></label>` : ''}
     <button class="btn btn-main btn-block" id="joinBtn" style="margin-top:16px"></button>
